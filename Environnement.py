@@ -14,7 +14,7 @@ class Environment:
                 if lines[row][col] == PLAYER_ONE_POSITION:
                     self.__playerOnePosition = (row, col)
                 elif lines[row][col] == PLAYER_TWO_POSITION:
-                    self.__playerTwo = (row, col)
+                    self.__playerTwoPosition = (row, col)
 
 
     def apply(self, player, opponent, action):
@@ -31,8 +31,8 @@ class Environment:
         return self.__playerOnePosition
 
     @property
-    def playerTwo(self):
-        return self.__playerTwo
+    def playerTwoPosition(self):
+        return self.__playerTwoPosition
 
     @property
     def states(self):

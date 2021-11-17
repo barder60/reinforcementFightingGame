@@ -11,8 +11,7 @@ GROUND = """
 if __name__ == '__main__':
     env = GameBoard(GROUND)
     PlayerOne = Player(env, env.playerOnePosition)
-    PlayerTwo = Player(env, env.playerOne)
+    PlayerTwo = Player(env, env.playerTwoPosition)
 
 
     print(env.states)
-    print(PlayerOne)
