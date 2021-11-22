@@ -1,34 +1,38 @@
 LEFT = 'LEFT'
 RIGHT = 'RIGHT'
-ATT_UP = 'ATT_UP'
-DEF_UP = 'DEF_UP'
-ATT_MID = 'ATT_MID'
-DEF_MID = 'DEF_MID'
-ATT_DOWN = 'ATT_DOWN'
-DEF_DOWN = 'DEF_DOWN'
+UP = 'UP'
+DOWN = 'DOWN'
+ATT_LEFT = 'ATT_LEFT'
+ATT_RIGHT = 'ATT_RIGHT'
+BLOCK_LEFT = 'BLOCK_LEFT'
+BLOCK_RIGHT = 'BLOCK_RIGHT'
+NOTHING = 'NOTHING'
 
 ACTIONS = [
     LEFT,
     RIGHT,
-    ATT_UP,
-    DEF_UP,
-    ATT_MID,
-    DEF_MID,
-    ATT_DOWN,
-    DEF_DOWN
+    NOTHING,
+    ATT_LEFT,
+    ATT_RIGHT,
+    BLOCK_LEFT,
+    BLOCK_RIGHT
 ]
 
 class Player:
-    def __init__(self, environment, start, learning_rate=1, discount_factor=0.5):
+    def __init__(self, environment, start, learning_rate=1, discount_factor=0.5, life_point=100, last_action=NOTHING):
+        self.__life_point = life_point
+        self.__last_action = last_action
         self.__environment = environment
         self.__learning_rate = learning_rate
         self.__discount_factor = discount_factor
         self.__qtable = {}
         self.__start = start
+
         for s in self.__environment.states:
             self.__qtable[s] = {}
             for a in ACTIONS:
                 self.__qtable[s][a] = 0.0
+
         self.reset()
 
     def reset(self):
@@ -36,8 +40,20 @@ class Player:
         self.__score = 0
 
     @property
+    def start_position(self):
+        return self.start_position
+
+    @property
     def state(self):
         return self.__state
+
+    @property
+    def lifePoint(self):
+        return self.__life_point
+
+    @property
+    def lastAction(self):
+        return self.__last_action
 
     def best_action(self):
         best = None

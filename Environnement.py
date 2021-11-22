@@ -1,7 +1,15 @@
-from Player import LEFT, RIGHT, ATT_UP, DEF_UP, ATT_MID, DEF_MID, ATT_DOWN, DEF_DOWN
-
+from Player import LEFT, RIGHT, UP, DOWN, BLOCK_LEFT, BLOCK_RIGHT, ATT_LEFT, ATT_RIGHT
 PLAYER_ONE_POSITION = '1'
 PLAYER_TWO_POSITION = '2'
+
+# REWARDS
+REWARD_WIN = 100
+REWARD_LOSE = -100
+REWARD_BORDER = -10
+REWARD_NOTHING = -1
+REWARD_GET_HIT = -5
+REWARD_DIRECT_HIT = 10
+REWARD_BLOCKED_HIT = 5
 
 
 class Environment:
@@ -22,7 +30,33 @@ class Environment:
             new_state = (player.state[0], player.state[1] - 1)
         elif action == RIGHT:
             new_state = (player.state[0], player.state[1] + 1)
+        elif action == UP:
+            new_state = (player.state[0] - 1, player.state[1])
+        elif action == DOWN:
+            new_state = (player.state[0] + 1, player.state[1])
+        elif action == BLOCK_LEFT:
+            # TODO : TRAITEMENT DE BLOCK
 
+            return
+        elif action == BLOCK_RIGHT:
+            # TODO : TRAITEMENT DE BLOCK
+            return
+        elif action == ATT_LEFT:
+            # TODO : TRAITEMENT DE BLOCK POSITION
+            if opponent.__last_action is not BLOCK_RIGHT and player.state[0] is opponent.state[0]:
+                reward = REWARD_GET_HIT
+            return
+        elif action == ATT_RIGHT:
+            if opponent.__last_action is not BLOCK_LEFT:
+                reward = REWARD_GET_HIT
+            return
+
+        if new_state in self.__states:
+            state = new_state
+        else:
+            reward = REWARD_LOSE
+
+        player.lastAction = action
         print(self.__states)
 
 

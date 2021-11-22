@@ -3,9 +3,11 @@ from Environnement import Environment as GameBoard
 
 
 GROUND = """
-    #########
-    # 1   2 #
-    #########
+    #####
+    # 2 #
+    #   #
+    # 1 #
+    #####
 """
 
 if __name__ == '__main__':
