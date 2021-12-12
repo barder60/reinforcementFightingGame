@@ -1,6 +1,6 @@
 from Player import Player
 from Environnement import Environment as GameBoard
-from constant import GROUND
+from constant import GROUND, NOTHING
 
 if __name__ == '__main__':
     env = GameBoard(GROUND)
@@ -11,5 +11,6 @@ if __name__ == '__main__':
     print(env.states)
     print(PlayerOne.qtable)
     print(PlayerTwo.qtable)
+    print(PlayerOne.best_action((0,1),NOTHING))
     print(env.playerOnePosition)
     print(env.playerTwoPosition)

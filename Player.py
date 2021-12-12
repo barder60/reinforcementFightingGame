@@ -60,11 +60,11 @@ class Player:
     def lastAction(self):
         return self.__last_action
 
-    def best_action(self):
+    def best_action(self, distance, other_player_last_action):
         best = None
-        for a in self.__qtable[self.__state]:
+        for a in self.__qtable[distance][other_player_last_action]:
             if not best \
-                    or self.__qtable[self.__state][a] > self.__qtable[self.__state][best]:
+                    or self.__qtable[distance][other_player_last_action][a] > self.__qtable[distance][other_player_last_action][a]:
                 best = a
         return best
 
