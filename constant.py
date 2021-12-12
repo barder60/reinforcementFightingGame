@@ -1,3 +1,5 @@
+import pygame
+
 GROUND = """
     #####
     # 2 #
@@ -5,6 +7,9 @@ GROUND = """
     # 1 #
     #####
 """
+
+# ASSETS
+background = pygame.image.load("assets/ring_de_box.PNG")
 
 # POSITION
 PLAYER_ONE_POSITION = '1'
