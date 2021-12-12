@@ -1,14 +1,6 @@
 from Player import Player
 from Environnement import Environment as GameBoard
-
-
-GROUND = """
-    #####
-    # 2 #
-    #   #
-    # 1 #
-    #####
-"""
+from constant import GROUND
 
 if __name__ == '__main__':
     env = GameBoard(GROUND)
@@ -17,3 +9,7 @@ if __name__ == '__main__':
 
 
     print(env.states)
+    print(PlayerOne.qtable)
+    print(PlayerTwo.qtable)
+    print(env.playerOnePosition)
+    print(env.playerTwoPosition)

@@ -1,21 +1,16 @@
 from Player import LEFT, RIGHT, UP, DOWN, BLOCK_LEFT, BLOCK_RIGHT, ATT_LEFT, ATT_RIGHT
-PLAYER_ONE_POSITION = '1'
-PLAYER_TWO_POSITION = '2'
-
-# REWARDS
-REWARD_WIN = 100
-REWARD_LOSE = -100
-REWARD_BORDER = -10
-REWARD_NOTHING = -1
-REWARD_GET_HIT = -5
-REWARD_DIRECT_HIT = 10
-REWARD_BLOCKED_HIT = 5
+from constant import PLAYER_ONE_POSITION, PLAYER_TWO_POSITION, REWARD_GET_HIT, REWARD_LOSE, HEAVY_ATT_RIGHT, \
+    HEAVY_ATT_LEFT
 
 
 class Environment:
     def __init__(self, text):
         self.__states = {}
         lines = list(map(lambda x: x.strip(), text.strip().split('\n')))
+        self.__lineLength = len(lines) - 2
+        print(self.__lineLength)
+        self.__rowLength = len(lines[0]) - 2
+        print(self.__rowLength)
         for row in range(len(lines)):
             for col in range(len(lines[row])):
                 self.__states[(row, col)] = lines[row][col]
@@ -45,11 +40,19 @@ class Environment:
             # TODO : TRAITEMENT DE BLOCK POSITION
             if opponent.__last_action is not BLOCK_RIGHT and player.state[0] is opponent.state[0]:
                 reward = REWARD_GET_HIT
+                opponent.takeHit()
             return
         elif action == ATT_RIGHT:
             if opponent.__last_action is not BLOCK_LEFT:
                 reward = REWARD_GET_HIT
+                opponent.takeHit()
             return
+        elif action == HEAVY_ATT_RIGHT:
+            reward = REWARD_GET_HIT
+            opponent.takeHit()
+        elif action == HEAVY_ATT_LEFT:
+            reward = REWARD_GET_HIT
+            opponent.takeHit()
 
         if new_state in self.__states:
             state = new_state
@@ -71,3 +74,11 @@ class Environment:
     @property
     def states(self):
         return self.__states
+
+    @property
+    def lineLength(self):
+        return self.__lineLength
+
+    @property
+    def rowLength(self):
+        return self.__rowLength

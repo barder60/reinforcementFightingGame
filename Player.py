@@ -1,37 +1,25 @@
-LEFT = 'LEFT'
-RIGHT = 'RIGHT'
-UP = 'UP'
-DOWN = 'DOWN'
-ATT_LEFT = 'ATT_LEFT'
-ATT_RIGHT = 'ATT_RIGHT'
-BLOCK_LEFT = 'BLOCK_LEFT'
-BLOCK_RIGHT = 'BLOCK_RIGHT'
-NOTHING = 'NOTHING'
+from constant import NOTHING, ACTIONS, HIT_DMG, HEAVY_HIT_DMG
 
-ACTIONS = [
-    LEFT,
-    RIGHT,
-    NOTHING,
-    ATT_LEFT,
-    ATT_RIGHT,
-    BLOCK_LEFT,
-    BLOCK_RIGHT
-]
 
 class Player:
     def __init__(self, environment, start, learning_rate=1, discount_factor=0.5, life_point=100, last_action=NOTHING):
         self.__life_point = life_point
         self.__last_action = last_action
+        self.__delay = 0
         self.__environment = environment
         self.__learning_rate = learning_rate
         self.__discount_factor = discount_factor
         self.__qtable = {}
         self.__start = start
 
-        for s in self.__environment.states:
-            self.__qtable[s] = {}
-            for a in ACTIONS:
-                self.__qtable[s][a] = 0.0
+        for line in range(self.__environment.lineLength):
+            for row in range(self.__environment.rowLength):
+                distance = (line, row)
+                self.__qtable[distance] = {}
+                for other_player_action in ACTIONS:
+                    self.__qtable[distance][other_player_action] = {}
+                    for player_action in ACTIONS:
+                        self.__qtable[distance][other_player_action][player_action] = 0.0
 
         self.reset()
 
@@ -48,8 +36,25 @@ class Player:
         return self.__state
 
     @property
+    def qtable(self):
+        return self.__qtable
+
+    @property
     def lifePoint(self):
         return self.__life_point
+
+    @property
+    def delay(self):
+        return self.__delay
+
+    def takeHit(self):
+        self.__life_point = self.__life_point - HIT_DMG
+
+    def takeHeavyHit(self):
+        self.__life_point = self.__life_point - HEAVY_HIT_DMG
+
+    def isDead(self):
+        return self.__life_point <= 0
 
     @property
     def lastAction(self):
