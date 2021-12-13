@@ -59,6 +59,7 @@ class Environment:
             reward = REWARD_LOSE
 
         player.lastAction = action
+        player.update((1,2), opponent.last_action, action, state, reward) #TODO RECUPERER LA DISTANCE
         print(self.__states)
 
 

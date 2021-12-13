@@ -68,14 +68,14 @@ class Player:
                 best = a
         return best
 
-    def update(self, state, action, reward):
+    def update(self, distance, other_player_action, action, position, reward):
         # Q(s, a) <- Q(s, a) + learning_rate *
         #                     [reward + discount_factor * max(Q(state)) - Q(s, a)]
 
-        maxQ = max(self.__qtable[state].values())
-        self.__qtable[self.__state][action] += self.__learning_rate * \
+        maxQ = max(self.__qtable[distance][other_player_action].values())
+        self.__qtable[distance][other_player_action][action] += self.__learning_rate * \
                                                (reward + self.__discount_factor * \
-                                                maxQ - self.__qtable[self.__state][action])
+                                                maxQ - self.__qtable[distance][other_player_action][action])
 
-        self.__state = state
+        self.__state = position
         self.__score += reward
