@@ -1,5 +1,6 @@
-from constant import PLAYER_ONE_POSITION, PLAYER_TWO_POSITION, REWARD_GET_HIT, REWARD_LOSE, HEAVY_ATT_RIGHT, \
-    HEAVY_ATT_LEFT, LEFT, RIGHT, UP, DOWN, BLOCK_LEFT, BLOCK_RIGHT, ATT_LEFT, ATT_RIGHT
+from constant import PLAYER_ONE_POSITION, PLAYER_TWO_POSITION, REWARD_LOSE, HEAVY_ATT_RIGHT, \
+    HEAVY_ATT_LEFT, LEFT, RIGHT, UP, DOWN, BLOCK_LEFT, BLOCK_RIGHT, ATT_LEFT, ATT_RIGHT, WALL, RUN_IN_OPPONENT, \
+    REWARD_BORDER, REWARD_DIRECT_HIT
 
 
 class Environment:
@@ -7,9 +8,8 @@ class Environment:
         self.__states = {}
         lines = list(map(lambda x: x.strip(), text.strip().split('\n')))
         self.__lineLength = len(lines) - 2
-        print(self.__lineLength)
         self.__rowLength = len(lines[0]) - 2
-        print(self.__rowLength)
+
         for row in range(len(lines)):
             for col in range(len(lines[row])):
                 self.__states[(row, col)] = lines[row][col]
@@ -18,8 +18,10 @@ class Environment:
                 elif lines[row][col] == PLAYER_TWO_POSITION:
                     self.__playerTwoPosition = (row, col)
 
+    def apply(self, player, opponent, action, distance):
+        reward = 0
+        new_state = None
 
-    def apply(self, player, opponent, action):
         if action == LEFT:
             new_state = (player.state[0], player.state[1] - 1)
         elif action == RIGHT:
@@ -28,40 +30,45 @@ class Environment:
             new_state = (player.state[0] - 1, player.state[1])
         elif action == DOWN:
             new_state = (player.state[0] + 1, player.state[1])
-        elif action == BLOCK_LEFT:
-            # TODO : TRAITEMENT DE BLOCK
 
-            return
-        elif action == BLOCK_RIGHT:
-            # TODO : TRAITEMENT DE BLOCK
-            return
         elif action == ATT_LEFT:
-            # TODO : TRAITEMENT DE BLOCK POSITION
-            if opponent.__last_action is not BLOCK_RIGHT and player.state[0] is opponent.state[0]:
-                reward = REWARD_GET_HIT
+            if opponent.lastAction is not BLOCK_LEFT \
+                    and (player.state[0] is opponent.state[0] or player.state[1] is opponent.state[1]):
+                reward = REWARD_DIRECT_HIT
                 opponent.takeHit()
-            return
         elif action == ATT_RIGHT:
-            if opponent.__last_action is not BLOCK_LEFT:
-                reward = REWARD_GET_HIT
+            if opponent.lastAction is not BLOCK_RIGHT \
+                    and (player.state[0] is opponent.state[0] or player.state[1] is opponent.state[1]):
+                reward = REWARD_DIRECT_HIT
                 opponent.takeHit()
-            return
         elif action == HEAVY_ATT_RIGHT:
-            reward = REWARD_GET_HIT
-            opponent.takeHit()
+            player.delay = 1  # TODO gestion du delai
+            return
         elif action == HEAVY_ATT_LEFT:
-            reward = REWARD_GET_HIT
-            opponent.takeHit()
+            player.delay = 1  # TODO gestion du delai
+            return
 
-        if new_state in self.__states:
-            state = new_state
+        if new_state is not None and new_state in self.__states:
+            if new_state == opponent.state:
+                reward = RUN_IN_OPPONENT
+                player.update(distance, opponent.lastAction, action, reward)
+                new_state = player.state
+            if self.__states[new_state] == WALL:
+                #print("JE PREND UN MUR")
+                reward = REWARD_BORDER
+                player.update(distance, opponent.lastAction, action, reward)
+                new_state = player.state
+            else:
+                reward = -1
+                player.update(distance, opponent.lastAction, action, reward)
+
+            player.setState(new_state)
+
         else:
             reward = REWARD_LOSE
+            player.update(distance, opponent.lastAction, action, reward)
 
-        player.lastAction = action
-        player.update((1,2), opponent.last_action, action, state, reward) #TODO RECUPERER LA DISTANCE
-        print(self.__states)
-
+        player.setLastAction = action
 
     @property
     def playerOnePosition(self):

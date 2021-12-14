@@ -12,8 +12,8 @@ class Player:
         self.__qtable = {}
         self.__start = start
 
-        for line in range(self.__environment.lineLength):
-            for row in range(self.__environment.rowLength):
+        for line in range(-self.__environment.lineLength, self.__environment.lineLength):
+            for row in range(-self.__environment.rowLength, self.__environment.rowLength):
                 distance = (line, row)
                 self.__qtable[distance] = {}
                 for other_player_action in ACTIONS:
@@ -47,6 +47,10 @@ class Player:
     def delay(self):
         return self.__delay
 
+    @delay.setter
+    def delay(self,delay):
+        self.__delay = delay
+
     def takeHit(self):
         self.__life_point = self.__life_point - HIT_DMG
 
@@ -60,15 +64,20 @@ class Player:
     def lastAction(self):
         return self.__last_action
 
+    @property
+    def score(self):
+        return self.__score
+
     def best_action(self, distance, other_player_last_action):
         best = None
+        #print(self.__qtable[distance][other_player_last_action])
         for a in self.__qtable[distance][other_player_last_action]:
             if not best \
-                    or self.__qtable[distance][other_player_last_action][a] > self.__qtable[distance][other_player_last_action][a]:
+                    or self.__qtable[distance][other_player_last_action][a] > self.__qtable[distance][other_player_last_action][best]:
                 best = a
         return best
 
-    def update(self, distance, other_player_action, action, position, reward):
+    def update(self, distance, other_player_action, action, reward):
         # Q(s, a) <- Q(s, a) + learning_rate *
         #                     [reward + discount_factor * max(Q(state)) - Q(s, a)]
 
@@ -76,6 +85,12 @@ class Player:
         self.__qtable[distance][other_player_action][action] += self.__learning_rate * \
                                                (reward + self.__discount_factor * \
                                                 maxQ - self.__qtable[distance][other_player_action][action])
+        #print(self.__qtable[distance][other_player_action][action])
 
-        self.__state = position
         self.__score += reward
+
+    def setState(self, newState):
+        self.__state = newState
+
+    def setLastAction(self, newLastAction):
+        self.__last_action = newLastAction
