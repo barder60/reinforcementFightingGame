@@ -68,7 +68,7 @@ class Environment:
             reward = REWARD_LOSE
             player.update(distance, opponent.lastAction, action, reward)
 
-        player.setLastAction = action
+        player.setLastAction(action)
 
     @property
     def playerOnePosition(self):

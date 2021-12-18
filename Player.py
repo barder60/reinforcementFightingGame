@@ -2,7 +2,7 @@ from constant import NOTHING, ACTIONS, HIT_DMG, HEAVY_HIT_DMG
 
 
 class Player:
-    def __init__(self, environment, start, learning_rate=1, discount_factor=0.5, life_point=100, last_action=NOTHING):
+    def __init__(self, environment, start, color, learning_rate=1, discount_factor=0.5, life_point=100, last_action=NOTHING):
         self.__life_point = life_point
         self.__last_action = last_action
         self.__delay = 0
@@ -11,6 +11,7 @@ class Player:
         self.__discount_factor = discount_factor
         self.__qtable = {}
         self.__start = start
+        self.__color = color
 
         for line in range(-self.__environment.lineLength, self.__environment.lineLength):
             for row in range(-self.__environment.rowLength, self.__environment.rowLength):
@@ -67,6 +68,10 @@ class Player:
     @property
     def score(self):
         return self.__score
+
+    @property
+    def color(self):
+        return self.__color
 
     def best_action(self, distance, other_player_last_action):
         best = None
