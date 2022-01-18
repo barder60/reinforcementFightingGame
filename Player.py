@@ -12,6 +12,7 @@ class Player:
         self.__qtable = {}
         self.__start = start
         self.__color = color
+        self.__last_animation = ""
 
         for line in range(-self.__environment.lineLength, self.__environment.lineLength):
             for row in range(-self.__environment.rowLength, self.__environment.rowLength):
@@ -72,6 +73,14 @@ class Player:
     @property
     def color(self):
         return self.__color
+
+    @property
+    def last_animation(self):
+        return self.__last_animation
+
+    @last_animation.setter
+    def last_animation(self, last_animation):
+        self.__last_animation = last_animation
 
     def best_action(self, distance, other_player_last_action):
         best = None

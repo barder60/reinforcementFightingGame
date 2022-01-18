@@ -1,3 +1,5 @@
+import time
+
 import pygame
 
 from Environnement import Environment as GameBoard
@@ -88,6 +90,7 @@ def StartPygame():
         PlayerTwo = Player(env, env.playerTwoPosition, "blue")
 
         for i in range(10):
+            time.sleep(0.5)
             count = 0
             PlayerOne.reset()
             PlayerTwo.reset()
@@ -122,36 +125,21 @@ def positionVisual(player):
     return (player.state[0] * 200, player.state[1] * 200)
 
 def loopVisualBoxer(player, screen, dead=False):
-    # screen.blit(actionDuPlayer, (posX, posY))
-
+    if player.last_animation != "":
+        player.last_animation = player.last_animation.move(2000, 2000)
     if dead == True:
         if player.color == "red":
-            screen.blit(RED_KO_ANIMATIONS[0], positionVisual(player))
-            pygame.display.update()
-            screen.blit(RED_KO_ANIMATIONS[1], positionVisual(player))
-            pygame.display.update()
-            screen.blit(RED_KO_ANIMATIONS[2], positionVisual(player))
+            player.last_animation = screen.blit(RED_KO_ANIMATIONS[2], positionVisual(player))
         else:
-            screen.blit(BLUE_KO_ANIMATIONS[0], positionVisual(player))
-            pygame.display.update()
-            screen.blit(BLUE_KO_ANIMATIONS[1], positionVisual(player))
-            pygame.display.update()
-            screen.blit(BLUE_KO_ANIMATIONS[2], positionVisual(player))
+            player.last_animation = screen.blit(BLUE_KO_ANIMATIONS[2], positionVisual(player))
     elif player.lastAction == "ATT_RIGHT":
         if player.color == "red":
-            screen.blit(RED_PUNCH_RIGHT_ANIMATION[0], positionVisual(player))
-            pygame.display.update()
-            screen.blit(RED_PUNCH_RIGHT_ANIMATION[1], positionVisual(player))
-            pygame.display.update()
-            screen.blit(RED_PUNCH_RIGHT_ANIMATION[2], positionVisual(player))
+            player.last_animation = screen.blit(RED_PUNCH_RIGHT_ANIMATION[2], positionVisual(player))
         else:
-            screen.blit(BLUE_PUNCH_RIGHT_ANIMATION[0], positionVisual(player))
-            pygame.display.update()
-            screen.blit(BLUE_PUNCH_RIGHT_ANIMATION[1], positionVisual(player))
-            pygame.display.update()
-            screen.blit(BLUE_PUNCH_RIGHT_ANIMATION[2], positionVisual(player))
-        print(positionVisual(player))
-        # print(player.color, player.lastAction)
+            player.last_animation = screen.blit(BLUE_PUNCH_RIGHT_ANIMATION[2], positionVisual(player))
+
+        pygame.display.update()
+        print(player.color, player.lastAction)
 
 
 
