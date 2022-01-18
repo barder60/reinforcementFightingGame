@@ -3,7 +3,7 @@ import pygame
 from utils import spritesheet
 
 # ASSETS
-background = pygame.image.load("assets/ring_de_box.PNG")
+background = pygame.image.load("assets/ring_de_box.jpg")
 
 redBoxerImage = pygame.image.load('assets/red_boxer_sprite.png').convert_alpha()
 sprite_sheet_red = spritesheet.SpriteSheet(redBoxerImage)
