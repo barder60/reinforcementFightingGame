@@ -8,7 +8,7 @@ from Player import Player
 from utils import spritesheet
 
 pygame.init()
-screen = pygame.display.set_mode((895, 860))
+screen = pygame.display.set_mode((828, 828))
 
 from constantAssets import background, RED_BASIC_MOVEMENT_LEFT, RED_BASIC_MOVEMENT_RIGHT, BLUE_BASIC_MOVEMENT_LEFT, \
     BLUE_BASIC_MOVEMENT_RIGHT, RED_PUNCH_LEFT_START, RED_PUNCH_LEFT_DONE, RED_PUNCH_DOING, RED_PUNCH_RIGHT_DONE, \
@@ -70,6 +70,21 @@ def playerDoesAction(playerActive, playerPassive, env):
     env.apply(playerActive, playerPassive, bestAction, distance)
 
 
+def displayPosition(PlayerOne, PlayerTwo):
+    for i in range(5):
+        string = ""
+        for y in range(5):
+            if i == 0 or y == 0 or i == 4 or y == 4:
+                string = string + '#'
+            elif PlayerOne.state[0] == i and PlayerOne.state[1] == y:
+                string = string + '1'
+            elif PlayerTwo.state[0] == i and PlayerTwo.state[1] == y:
+                string = string + '2'
+            else:
+                string = string + ' '
+        print(string)
+
+
 def StartPygame():
     screen.blit(background, background.get_rect())
     running = True
@@ -86,18 +101,20 @@ def StartPygame():
             running = False
 
         env = GameBoard(GROUND)
+        print(env.playerOnePosition)
+        print(env.playerTwoPosition)
         PlayerOne = Player(env, env.playerOnePosition, "red")
         PlayerTwo = Player(env, env.playerTwoPosition, "blue")
-
-        for i in range(10):
-            time.sleep(0.5)
+        running = False
+        for i in range(20):
+            time.sleep(1)
             count = 0
             PlayerOne.reset()
             PlayerTwo.reset()
             isFinished = False
             while not isFinished:
 
-                if count == 10:
+                if count == 90:
                     isFinished = True
                     continue
 
@@ -107,6 +124,7 @@ def StartPygame():
                     continue
 
                 playerDoesAction(PlayerOne, PlayerTwo, env)
+
                 loopVisualBoxer(PlayerOne, screen)
 
                 if PlayerTwo.isDead():
@@ -115,14 +133,24 @@ def StartPygame():
                     continue
 
                 playerDoesAction(PlayerTwo, PlayerOne, env)
+
                 loopVisualBoxer(PlayerTwo, screen)
 
                 count = count + 1
 
+            print("PASSAGE NUMERO " + str(i))
+            print("JOUEUR 1 : " + str(PlayerOne.score))
+            print("JOUEUR 2 : " + str(PlayerTwo.score))
+
+        print(PlayerOne.qtable[(1, 0)])
+        print(PlayerTwo.qtable[(-1, 0)])
+
     pygame.quit()
+
 
 def positionVisual(player):
     return (player.state[0] * 200, player.state[1] * 200)
+
 
 def loopVisualBoxer(player, screen, dead=False):
     if player.last_animation != "":
@@ -137,10 +165,18 @@ def loopVisualBoxer(player, screen, dead=False):
             player.last_animation = screen.blit(RED_PUNCH_RIGHT_ANIMATION[2], positionVisual(player))
         else:
             player.last_animation = screen.blit(BLUE_PUNCH_RIGHT_ANIMATION[2], positionVisual(player))
+    elif player.lastAction == "DOWN":
+        if player.color == "red":
+            player.last_animation = screen.blit(RED_BASIC_MOVEMENT_RIGHT, positionVisual(player))
+        else:
+            player.last_animation = screen.blit(BLUE_BASIC_MOVEMENT_RIGHT, positionVisual(player))
+    elif player.lastAction == "UP":
+        if player.color == "red":
+            player.last_animation = screen.blit(RED_BASIC_MOVEMENT_RIGHT, positionVisual(player))
+        else:
+            player.last_animation = screen.blit(BLUE_BASIC_MOVEMENT_RIGHT, positionVisual(player))
 
-        pygame.display.update()
-        print(player.color, player.lastAction)
-
-
+    pygame.display.update()
+    print(player.color, player.lastAction)
 
     pygame.display.update()
