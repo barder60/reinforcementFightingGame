@@ -59,6 +59,7 @@ class Player:
     def takeHit(self, hit, distance):
         print("SOMEONE TAKE HIT")
         self.__life_point = self.__life_point - HIT_DMG
+        print("LES PARAMETRES SONT => " + str(distance) + " " + hit + " " + self.__last_action + " " + str(REWARD_GET_HIT))
         self.update(distance, hit, self.__last_action, REWARD_GET_HIT)
 
     def takeHeavyHit(self, heavy_hit, distance):

@@ -38,6 +38,7 @@ class Environment:
     def apply(self, player, opponent, action, distance):
         reward = 0
         new_state = None
+        opponent_distance = (-distance[0], -distance[1])
 
         if player.delay == 1 and (player.lastAction == HEAVY_ATT_LEFT or player.lastAction == HEAVY_ATT_RIGHT):
             player.delay = 0
@@ -48,7 +49,7 @@ class Environment:
                     or (player.state[1] is opponent.state[1]
                         and (player.state[0] == opponent.state[0] + 1 or player.state[0] == opponent.state[0] - 1))):
                 reward = REWARD_DIRECT_HEAVY_HIT
-                opponent.takeHeavyHit(player.lastAction, distance)
+                opponent.takeHeavyHit(player.lastAction, opponent_distance)
                 action = player.lastAction
             elif (opponent.lastAction is BLOCK_LEFT or opponent.lastAction is not BLOCK_RIGHT) \
                     and (
@@ -57,7 +58,7 @@ class Environment:
                     or (player.state[1] is opponent.state[1]
                         and (player.state[0] == opponent.state[0] + 1 or player.state[0] == opponent.state[0] - 1))):
                 reward = REWARD_BREAK_BLOCK
-                opponent.takeHeavyHitOnBlock(player.lastAction, distance)
+                opponent.takeHeavyHitOnBlock(player.lastAction, opponent_distance)
                 action = player.lastAction
             else:
                 action = player.lastAction
@@ -82,11 +83,11 @@ class Environment:
             if opponent.lastAction is not BLOCK_LEFT \
                     and (
                     (player.state[0] is opponent.state[0]
-                          and (player.state[1] == opponent.state[1] + 1 or player.state[1] == opponent.state[1] - 1))
+                     and (player.state[1] == opponent.state[1] + 1 or player.state[1] == opponent.state[1] - 1))
                     or (player.state[1] is opponent.state[1]
-                          and (player.state[0] == opponent.state[0] + 1 or player.state[0] == opponent.state[0] - 1))):
+                        and (player.state[0] == opponent.state[0] + 1 or player.state[0] == opponent.state[0] - 1))):
                 reward = REWARD_DIRECT_HIT
-                opponent.takeHit(ATT_LEFT, distance)
+                opponent.takeHit(ATT_LEFT, opponent_distance)
             elif opponent.lastAction is BLOCK_LEFT \
                     and (
                     (player.state[0] is opponent.state[0]
@@ -94,7 +95,7 @@ class Environment:
                     or (player.state[1] is opponent.state[1]
                         and (player.state[0] == opponent.state[0] + 1 or player.state[0] == opponent.state[0] - 1))):
                 reward = REWARD_HIT_IN_BLOCK
-                opponent.block_hit(ATT_LEFT, distance)
+                opponent.block_hit(ATT_LEFT, opponent_distance)
             else:
                 reward = REWARD_MISS
 
@@ -107,7 +108,7 @@ class Environment:
                     or (player.state[1] is opponent.state[1]
                         and (player.state[0] == opponent.state[0] + 1 or player.state[0] == opponent.state[0] - 1))):
                 reward = REWARD_DIRECT_HIT
-                opponent.takeHit(ATT_RIGHT, distance)
+                opponent.takeHit(ATT_RIGHT, opponent_distance)
             elif opponent.lastAction is BLOCK_RIGHT \
                     and (
                     (player.state[0] is opponent.state[0]
@@ -115,7 +116,7 @@ class Environment:
                     or (player.state[1] is opponent.state[1]
                         and (player.state[0] == opponent.state[0] + 1 or player.state[0] == opponent.state[0] - 1))):
                 reward = REWARD_HIT_IN_BLOCK
-                opponent.block_hit(ATT_LEFT, distance)
+                opponent.block_hit(ATT_RIGHT, opponent_distance)
             else:
                 reward = REWARD_MISS
         elif action == HEAVY_ATT_RIGHT:
@@ -134,23 +135,26 @@ class Environment:
             print("POSITION ADVERSE = " + str(opponent.state))
             if new_state[0] == opponent.state[0] and new_state[1] == opponent.state[1]:
                 reward = RUN_IN_OPPONENT
-                print("ON SE RENTRE DEDANS")
-                print("LES PARAMETRES SONT => " + str(distance) + " " + opponent.lastAction + " " + action + " " + str(reward))
+                print("LES PARAMETRES SONT => " + str(distance) + " " + opponent.lastAction + " " + action + " " + str(
+                    reward))
                 player.update(distance, opponent.lastAction, action, reward)
                 new_state = player.state
-            if self.__states[new_state] == WALL:
+            elif self.__states[new_state] == WALL:
                 print("JE PREND UN MUR")
                 reward = REWARD_BORDER
+                print("LA")
                 player.update(distance, opponent.lastAction, action, reward)
                 new_state = player.state
             else:
                 newDistance = self.getDistance(new_state, opponent.state)
                 reward = self.rewardForDistance(distance, newDistance)
+                print("ICI")
                 player.update(distance, opponent.lastAction, action, reward)
 
             player.setState(new_state)
 
         else:
+            print("LES PARAMETRES SONT => " + str(distance) + " " + opponent.lastAction + " " + action + " " + str(reward))
             player.update(distance, opponent.lastAction, action, reward)
 
         player.setLastAction(action)

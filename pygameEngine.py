@@ -1,7 +1,7 @@
 import pygame
 
 from Environnement import Environment as GameBoard
-from constant import GROUND
+from constant import GROUND, ATT_LEFT, ATT_RIGHT
 from Player import Player
 from utils import spritesheet
 
@@ -60,12 +60,6 @@ lastUpdated = pygame.time.get_ticks()
 
 def getDistance(playerPosition: Player, oponentPosition: Player):
     return playerPosition.state[0] - oponentPosition.state[0], playerPosition.state[1] - oponentPosition.state[1]
-
-
-def playerDoesAction(playerActive, playerPassive, env):
-    distance = getDistance(playerActive, playerPassive)
-    bestAction = playerActive.best_action(distance, playerPassive.lastAction)
-    env.apply(playerActive, playerPassive, bestAction, distance)
 
 
 def displayPosition(PlayerOne, PlayerTwo):
@@ -148,8 +142,10 @@ def StartPygame():
             print("JOUEUR 1 : " + str(PlayerOne.score))
             print("JOUEUR 2 : " + str(PlayerTwo.score))
 
-        print(PlayerOne.qtable[(1, 0)])
-        print(PlayerTwo.qtable[(-1, 0)])
+        print(PlayerOne.qtable[(1, 0)][ATT_LEFT])
+        print(PlayerOne.qtable[(1, 0)][ATT_RIGHT])
+        print(PlayerTwo.qtable[(-1, 0)][ATT_RIGHT])
+        print(PlayerTwo.qtable[(-1, 0)][ATT_LEFT])
 
     pygame.quit()
 
