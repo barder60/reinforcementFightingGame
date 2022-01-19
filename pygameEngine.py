@@ -1,6 +1,7 @@
 import time
 
 import pygame
+from pygame.sprite import Sprite
 
 from Environnement import Environment as GameBoard
 from constant import GROUND, ATT_LEFT, ATT_RIGHT
@@ -8,6 +9,8 @@ from Player import Player
 from utils import spritesheet
 
 pygame.init()
+pygame.font.init()
+myfont = pygame.font.SysFont('Comic Sans MS', 30)
 screen = pygame.display.set_mode((828, 828))
 
 from constantAssets import background, RED_BASIC_MOVEMENT_LEFT, RED_BASIC_MOVEMENT_RIGHT, BLUE_BASIC_MOVEMENT_LEFT, \
@@ -107,28 +110,34 @@ def StartPygame():
             PlayerTwo.reset()
             isFinished = False
             while not isFinished:
-
                 if count == 90:
                     isFinished = True
                     continue
 
                 if PlayerOne.isDead():
                     isFinished = True
-                    loopVisualBoxer(PlayerOne, screen, dead=True)
                     continue
 
-                playerDoesAction(PlayerOne, PlayerTwo, env)
+                distance = env.getDistance(PlayerOne.state, PlayerTwo.state)
+                bestAction = PlayerOne.best_action(distance, PlayerTwo.lastAction)
+                displayPosition(PlayerOne, PlayerTwo)
+                print("JOUEUR 1 : " + str(distance) + " -> " + bestAction)
+                env.apply(PlayerOne, PlayerTwo, bestAction, distance)
 
-                loopVisualBoxer(PlayerOne, screen)
+                loopVisualBoxer(PlayerOne, PlayerTwo, screen)
 
                 if PlayerTwo.isDead():
                     isFinished = True
-                    loopVisualBoxer(PlayerTwo, screen, dead=True)
                     continue
 
-                playerDoesAction(PlayerTwo, PlayerOne, env)
+                # print("JOUEUR 2")
+                distance = env.getDistance(PlayerTwo.state, PlayerOne.state)
+                bestAction = PlayerTwo.best_action(distance, PlayerOne.lastAction)
+                displayPosition(PlayerOne, PlayerTwo)
+                print("JOUEUR 2 : " + str(distance) + " -> " + bestAction)
+                env.apply(PlayerTwo, PlayerOne, bestAction, distance)
 
-                loopVisualBoxer(PlayerTwo, screen)
+                loopVisualBoxer(PlayerTwo, PlayerOne, screen)
 
                 count = count + 1
 
@@ -148,10 +157,24 @@ def positionVisual(player):
     return (player.state[0] * 200, player.state[1] * 200)
 
 
-def loopVisualBoxer(player, screen, dead=False):
-    if player.last_animation != "":
-        player.last_animation = player.last_animation.move(2000, 2000)
-    if dead == True:
+def loopVisualBoxer(player, playerTwo, screen):
+    screen.blit(background, background.get_rect())
+    scorePlayerOne = myfont.render(str(player.score), False, (255, 0, 0))
+    scorePlayerTwo = myfont.render(str(playerTwo.score), False, (0, 0, 255))
+    screen.blit(scorePlayerOne, (25,0))
+    screen.blit(scorePlayerTwo, (700, 0))
+
+    displayPlayer(player, screen)
+    displayPlayer(playerTwo, screen)
+
+
+    pygame.display.update()
+
+    print(player.color, player.lastAction)
+
+
+def displayPlayer(player, screen):
+    if player.isDead() == True:
         if player.color == "red":
             player.last_animation = screen.blit(RED_KO_ANIMATIONS[2], positionVisual(player))
         else:
@@ -172,7 +195,3 @@ def loopVisualBoxer(player, screen, dead=False):
         else:
             player.last_animation = screen.blit(BLUE_BASIC_MOVEMENT_RIGHT, positionVisual(player))
 
-    pygame.display.update()
-    print(player.color, player.lastAction)
-
-    pygame.display.update()
