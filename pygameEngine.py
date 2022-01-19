@@ -104,12 +104,12 @@ def StartPygame():
         PlayerTwo = Player(env, env.playerTwoPosition, "blue")
         running = False
         for i in range(20):
-            time.sleep(1)
             count = 0
             PlayerOne.reset()
             PlayerTwo.reset()
             isFinished = False
             while not isFinished:
+                time.sleep(1)
                 if count == 90:
                     isFinished = True
                     continue
@@ -154,7 +154,8 @@ def StartPygame():
 
 
 def positionVisual(player):
-    return (player.state[0] * 200, player.state[1] * 200)
+    print(player.state)
+    return (player.state[1] * 200, player.state[0] * 200)
 
 
 def loopVisualBoxer(player, playerTwo, screen):
@@ -179,19 +180,19 @@ def displayPlayer(player, screen):
             player.last_animation = screen.blit(RED_KO_ANIMATIONS[2], positionVisual(player))
         else:
             player.last_animation = screen.blit(BLUE_KO_ANIMATIONS[2], positionVisual(player))
+    elif player.lastAction == "ATT_LEFT":
+        if player.color == "red":
+            player.last_animation = screen.blit(RED_PUNCH_LEFT_ANIMATION[2], positionVisual(player))
+        else:
+            player.last_animation = screen.blit(BLUE_PUNCH_LEFT_ANIMATION[2], positionVisual(player))
     elif player.lastAction == "ATT_RIGHT":
         if player.color == "red":
             player.last_animation = screen.blit(RED_PUNCH_RIGHT_ANIMATION[2], positionVisual(player))
         else:
             player.last_animation = screen.blit(BLUE_PUNCH_RIGHT_ANIMATION[2], positionVisual(player))
-    elif player.lastAction == "DOWN":
+    else:
         if player.color == "red":
             player.last_animation = screen.blit(RED_BASIC_MOVEMENT_RIGHT, positionVisual(player))
         else:
-            player.last_animation = screen.blit(BLUE_BASIC_MOVEMENT_RIGHT, positionVisual(player))
-    elif player.lastAction == "UP":
-        if player.color == "red":
-            player.last_animation = screen.blit(RED_BASIC_MOVEMENT_RIGHT, positionVisual(player))
-        else:
-            player.last_animation = screen.blit(BLUE_BASIC_MOVEMENT_RIGHT, positionVisual(player))
+            player.last_animation = screen.blit(BLUE_BASIC_MOVEMENT_LEFT, positionVisual(player))
 
