@@ -4,7 +4,7 @@ import pygame
 from pygame.sprite import Sprite
 
 from Environnement import Environment as GameBoard
-from constant import GROUND, ATT_LEFT, ATT_RIGHT
+from constant import GROUND, ATT_LEFT, ATT_RIGHT, STARTING_LIFE_POINT
 from Player import Player
 from utils import spritesheet
 
@@ -102,8 +102,8 @@ def StartPygame():
         env = GameBoard(GROUND)
         print(env.playerOnePosition)
         print(env.playerTwoPosition)
-        PlayerOne = Player(env, env.playerOnePosition, "red")
-        PlayerTwo = Player(env, env.playerTwoPosition, "blue")
+        PlayerOne = Player(env, env.playerOnePosition, "red", STARTING_LIFE_POINT)
+        PlayerTwo = Player(env, env.playerTwoPosition, "blue", STARTING_LIFE_POINT)
         running = False
         for i in range(20):
             count = 0
@@ -206,12 +206,12 @@ def displayPlayer(player, screen):
         if player.color == "red":
             player.last_animation = screen.blit(RED_PUNCH_LEFT_BLOCK, positionVisual(player))
         else:
-            player.last_animation = screen.blit(RED_PUNCH_LEFT_BLOCK, positionVisual(player))
+            player.last_animation = screen.blit(BLUE_PUNCH_LEFT_BLOCK, positionVisual(player))
     elif player.lastAction == "BLOCK_RIGHT":
         if player.color == "red":
             player.last_animation = screen.blit(RED_PUNCH_RIGHT_BLOCK, positionVisual(player))
         else:
-            player.last_animation = screen.blit(RED_PUNCH_RIGHT_BLOCK, positionVisual(player))
+            player.last_animation = screen.blit(BLUE_PUNCH_RIGHT_BLOCK, positionVisual(player))
     else:
         if player.color == "red":
             player.last_animation = screen.blit(RED_BASIC_MOVEMENT_RIGHT, positionVisual(player))

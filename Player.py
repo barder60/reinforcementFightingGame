@@ -3,7 +3,7 @@ from constant import NOTHING, ACTIONS, HIT_DMG, HEAVY_HIT_DMG, HEAVY_HIT_ON_BLOC
 
 
 class Player:
-    def __init__(self, environment, start, color, learning_rate=1, discount_factor=0.5, life_point=100,
+    def __init__(self, environment, start, color, life_point, learning_rate=1, discount_factor=0.5,
                  last_action=NOTHING):
         self.__life_point = life_point
         self.__last_action = last_action
