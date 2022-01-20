@@ -64,43 +64,9 @@ class Environment:
                 action = player.lastAction
                 reward = REWARD_MISS
                 print("JE RATE")
-        elif player.delay == 1:
+        elif player.delay == 1 and (player.lastAction == ATT_RIGHT):
             player.delay = 0
             action = player.lastAction
-            reward = 0
-        elif action == NOTHING:
-            reward = REWARD_NOTHING
-        elif action == LEFT:
-            new_state = (player.state[0], player.state[1] - 1)
-        elif action == RIGHT:
-            new_state = (player.state[0], player.state[1] + 1)
-        elif action == UP:
-            new_state = (player.state[0] - 1, player.state[1])
-        elif action == DOWN:
-            new_state = (player.state[0] + 1, player.state[1])
-
-        elif action == ATT_LEFT:
-            if opponent.lastAction is not BLOCK_LEFT \
-                    and (
-                    (player.state[0] is opponent.state[0]
-                     and (player.state[1] == opponent.state[1] + 1 or player.state[1] == opponent.state[1] - 1))
-                    or (player.state[1] is opponent.state[1]
-                        and (player.state[0] == opponent.state[0] + 1 or player.state[0] == opponent.state[0] - 1))):
-                reward = REWARD_DIRECT_HIT
-                opponent.takeHit(ATT_LEFT, opponent_distance)
-            elif opponent.lastAction is BLOCK_LEFT \
-                    and (
-                    (player.state[0] is opponent.state[0]
-                     and (player.state[1] == opponent.state[1] + 1 or player.state[1] == opponent.state[1] - 1))
-                    or (player.state[1] is opponent.state[1]
-                        and (player.state[0] == opponent.state[0] + 1 or player.state[0] == opponent.state[0] - 1))):
-                reward = REWARD_HIT_IN_BLOCK
-                opponent.block_hit(ATT_LEFT, opponent_distance)
-            else:
-                reward = REWARD_MISS
-
-
-        elif action == ATT_RIGHT:
             if opponent.lastAction is not BLOCK_RIGHT \
                     and (
                     (player.state[0] is opponent.state[0]
@@ -119,12 +85,51 @@ class Environment:
                 opponent.block_hit(ATT_RIGHT, opponent_distance)
             else:
                 reward = REWARD_MISS
+        elif player.delay == 1 and player.lastAction == ATT_LEFT:
+            player.delay = 0
+            action = player.lastAction
+            if opponent.lastAction is not BLOCK_LEFT \
+                    and (
+                    (player.state[0] is opponent.state[0]
+                     and (player.state[1] == opponent.state[1] + 1 or player.state[1] == opponent.state[1] - 1))
+                    or (player.state[1] is opponent.state[1]
+                        and (player.state[0] == opponent.state[0] + 1 or player.state[0] == opponent.state[0] - 1))):
+                reward = REWARD_DIRECT_HIT
+                opponent.takeHit(ATT_LEFT, opponent_distance)
+            elif opponent.lastAction is BLOCK_LEFT \
+                    and (
+                    (player.state[0] is opponent.state[0]
+                     and (player.state[1] == opponent.state[1] + 1 or player.state[1] == opponent.state[1] - 1))
+                    or (player.state[1] is opponent.state[1]
+                        and (player.state[0] == opponent.state[0] + 1 or player.state[0] == opponent.state[0] - 1))):
+                reward = REWARD_HIT_IN_BLOCK
+                opponent.block_hit(ATT_LEFT, opponent_distance)
+            else:
+                reward = REWARD_MISS
+        elif player.delay == 1:
+            player.delay = 0
+            action = player.lastAction
+            reward = 0
+        elif action == NOTHING:
+            reward = REWARD_NOTHING
+        elif action == LEFT:
+            new_state = (player.state[0], player.state[1] - 1)
+        elif action == RIGHT:
+            new_state = (player.state[0], player.state[1] + 1)
+        elif action == UP:
+            new_state = (player.state[0] - 1, player.state[1])
+        elif action == DOWN:
+            new_state = (player.state[0] + 1, player.state[1])
+
         elif action == HEAVY_ATT_RIGHT:
             player.delay = 1
             reward = 0
         elif action == HEAVY_ATT_LEFT:
             player.delay = 1
-            reward = -5
+            reward = 0
+        elif action == ATT_RIGHT or action == ATT_LEFT:
+            player.delay = 1
+            reward = 0
         elif action == BLOCK_RIGHT or action == BLOCK_LEFT:
             player.delay = 1
             player.opponent_action_on_block = opponent.lastAction
