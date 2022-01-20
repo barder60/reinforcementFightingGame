@@ -32,6 +32,8 @@ class Player:
         self.__state = self.__start
         self.__score = 0
         self.__life_point = 100
+        self.__delay = 0
+        self.__opponent_action_on_block = None
 
     @property
     def start_position(self):

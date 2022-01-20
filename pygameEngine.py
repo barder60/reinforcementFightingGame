@@ -109,7 +109,6 @@ def StartPygame():
             PlayerTwo.reset()
             isFinished = False
             while not isFinished:
-                time.sleep(1)
                 if count == 90:
                     isFinished = True
                     continue
@@ -123,8 +122,8 @@ def StartPygame():
                 displayPosition(PlayerOne, PlayerTwo)
                 print("JOUEUR 1 : " + str(distance) + " -> " + bestAction)
                 env.apply(PlayerOne, PlayerTwo, bestAction, distance)
-
                 loopVisualBoxer(PlayerOne, PlayerTwo, screen)
+                time.sleep(0.3)
 
                 if PlayerTwo.isDead():
                     isFinished = True
@@ -136,8 +135,9 @@ def StartPygame():
                 displayPosition(PlayerOne, PlayerTwo)
                 print("JOUEUR 2 : " + str(distance) + " -> " + bestAction)
                 env.apply(PlayerTwo, PlayerOne, bestAction, distance)
+                loopVisualBoxer(PlayerOne, PlayerTwo, screen)
+                time.sleep(0.3)
 
-                loopVisualBoxer(PlayerTwo, PlayerOne, screen)
 
                 count = count + 1
 
@@ -145,10 +145,10 @@ def StartPygame():
             print("JOUEUR 1 : " + str(PlayerOne.score))
             print("JOUEUR 2 : " + str(PlayerTwo.score))
 
-        print(PlayerOne.qtable[(1, 0)][ATT_LEFT])
+        #print(PlayerOne.qtable[(1, 0)][ATT_LEFT])
         print(PlayerOne.qtable[(1, 0)][ATT_RIGHT])
         print(PlayerTwo.qtable[(-1, 0)][ATT_RIGHT])
-        print(PlayerTwo.qtable[(-1, 0)][ATT_LEFT])
+        #print(PlayerTwo.qtable[(-1, 0)][ATT_LEFT])
 
     pygame.quit()
 

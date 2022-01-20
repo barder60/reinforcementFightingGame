@@ -49,7 +49,6 @@ ACTIONS = [
     UP,
     DOWN,
     NOTHING,
-    ATT_LEFT,
     ATT_RIGHT,
     HEAVY_ATT_LEFT,
     HEAVY_ATT_RIGHT,
