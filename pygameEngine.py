@@ -16,7 +16,9 @@ screen = pygame.display.set_mode((828, 828))
 from constantAssets import background, RED_BASIC_MOVEMENT_LEFT, RED_BASIC_MOVEMENT_RIGHT, BLUE_BASIC_MOVEMENT_LEFT, \
     BLUE_BASIC_MOVEMENT_RIGHT, RED_PUNCH_LEFT_START, RED_PUNCH_LEFT_DONE, RED_PUNCH_DOING, RED_PUNCH_RIGHT_DONE, \
     RED_PUNCH_RIGHT_START, RED_KO_START, RED_KO_DOING, RED_KO_DONE, BLUE_PUNCH_RIGHT_DONE, BLUE_PUNCH_RIGHT_START, \
-    BLUE_PUNCH_DOING, BLUE_KO_DONE, BLUE_KO_DOING, BLUE_KO_START
+    BLUE_PUNCH_DOING, BLUE_KO_DONE, BLUE_KO_DOING, BLUE_KO_START, BLUE_PUNCH_RIGHT_HIGH, RED_PUNCH_RIGHT_HIGH, \
+    RED_PUNCH_LEFT_HIGH, BLUE_PUNCH_LEFT_HIGH, BLUE_PUNCH_RIGHT_BLOCK, RED_PUNCH_RIGHT_BLOCK, RED_PUNCH_LEFT_BLOCK, \
+    BLUE_PUNCH_LEFT_BLOCK
 
 RED_ANIMATIONS = [
     RED_BASIC_MOVEMENT_RIGHT,
@@ -190,6 +192,26 @@ def displayPlayer(player, screen):
             player.last_animation = screen.blit(RED_PUNCH_RIGHT_ANIMATION[2], positionVisual(player))
         else:
             player.last_animation = screen.blit(BLUE_PUNCH_RIGHT_ANIMATION[2], positionVisual(player))
+    elif player.lastAction == "H_ATT_LEFT":
+        if player.color == "red":
+            player.last_animation = screen.blit(RED_PUNCH_LEFT_HIGH, positionVisual(player))
+        else:
+            player.last_animation = screen.blit(BLUE_PUNCH_LEFT_HIGH, positionVisual(player))
+    elif player.lastAction == "H_ATT_RIGHT":
+        if player.color == "red":
+            player.last_animation = screen.blit(RED_PUNCH_RIGHT_HIGH, positionVisual(player))
+        else:
+            player.last_animation = screen.blit(BLUE_PUNCH_RIGHT_HIGH, positionVisual(player))
+    elif player.lastAction == "BLOCK_LEFT":
+        if player.color == "red":
+            player.last_animation = screen.blit(RED_PUNCH_LEFT_BLOCK, positionVisual(player))
+        else:
+            player.last_animation = screen.blit(RED_PUNCH_LEFT_BLOCK, positionVisual(player))
+    elif player.lastAction == "BLOCK_RIGHT":
+        if player.color == "red":
+            player.last_animation = screen.blit(RED_PUNCH_RIGHT_BLOCK, positionVisual(player))
+        else:
+            player.last_animation = screen.blit(RED_PUNCH_RIGHT_BLOCK, positionVisual(player))
     else:
         if player.color == "red":
             player.last_animation = screen.blit(RED_BASIC_MOVEMENT_RIGHT, positionVisual(player))

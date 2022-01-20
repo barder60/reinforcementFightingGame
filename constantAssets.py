@@ -8,6 +8,14 @@ background = pygame.image.load("assets/ring_de_box.jpg")
 redBoxerImage = pygame.image.load('assets/red_boxer_sprite.png').convert_alpha()
 sprite_sheet_red = spritesheet.SpriteSheet(redBoxerImage)
 
+redBoxerHighBlockImage = pygame.image.load('assets/red_boxer_high_block.png').convert_alpha()
+sprite_sheet_red_high_block = spritesheet.SpriteSheet(redBoxerHighBlockImage)
+
+
+blueBoxerHighBlockImage = pygame.image.load('assets/blue_boxer_high_block.png').convert_alpha()
+sprite_sheet_blue_high_block = spritesheet.SpriteSheet(blueBoxerHighBlockImage)
+
+
 blueBoxerImage = pygame.image.load('assets/blue_boxer_sprite.png').convert_alpha()
 sprite_sheet_blue = spritesheet.SpriteSheet(blueBoxerImage)
 
@@ -20,6 +28,12 @@ RED_PUNCH_LEFT_DONE = sprite_sheet_red.get_image(5, 93, 100, 1, 100)
 
 RED_PUNCH_RIGHT_START = sprite_sheet_red.get_image(0, 93, 100, 1)
 RED_PUNCH_RIGHT_DONE = sprite_sheet_red.get_image(0, 93, 100, 1, 90)
+
+RED_PUNCH_RIGHT_HIGH = sprite_sheet_red_high_block.get_image(0, 90, 100, 1, 100)
+RED_PUNCH_LEFT_HIGH = sprite_sheet_red_high_block.get_image(5, 90, 132, 1, 100)
+
+RED_PUNCH_RIGHT_BLOCK = sprite_sheet_red_high_block.get_image(1, 132, 100, 1)
+RED_PUNCH_LEFT_BLOCK = sprite_sheet_red_high_block.get_image(0, 132, 100, 1)
 
 RED_BASIC_MOVEMENT_LEFT = sprite_sheet_red.get_image(3, 80, 100, 1)
 RED_BASIC_MOVEMENT_RIGHT = sprite_sheet_red.get_image(4, 90, 100, 1)
@@ -38,6 +52,12 @@ BLUE_PUNCH_DOING = sprite_sheet_blue.get_image(5, 93, 100, 1, 132)
 
 BLUE_BASIC_MOVEMENT_LEFT = sprite_sheet_blue.get_image(3, 80, 100, 1, 132)
 BLUE_BASIC_MOVEMENT_RIGHT = sprite_sheet_blue.get_image(5, 80, 100, 1, 132)
+
+BLUE_PUNCH_RIGHT_HIGH = sprite_sheet_blue_high_block.get_image(5, 90, 132, 1)
+BLUE_PUNCH_LEFT_HIGH = sprite_sheet_blue_high_block.get_image(0, 90, 132, 1)
+
+BLUE_PUNCH_RIGHT_BLOCK = sprite_sheet_blue_high_block.get_image(0, 132, 100, 1, 132)
+BLUE_PUNCH_LEFT_BLOCK = sprite_sheet_blue_high_block.get_image(1, 132, 100, 1, 132)
 
 BLUE_PUNCH_RIGHT_START = sprite_sheet_blue.get_image(0, 90, 100, 1, 132)
 BLUE_PUNCH_RIGHT_DONE = sprite_sheet_blue.get_image(5, 93, 130, 1)
