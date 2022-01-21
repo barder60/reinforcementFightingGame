@@ -1,5 +1,5 @@
 from constant import NOTHING, ACTIONS, HIT_DMG, HEAVY_HIT_DMG, HEAVY_HIT_ON_BLOCK_DMG, REWARD_GET_HIT, \
-    REWARD_GET_HEAVY_HIT, REWARD_BLOCKED_HIT
+    REWARD_GET_HEAVY_HIT, REWARD_BLOCKED_HIT, REWARD_GET_BREAK
 
 
 class Player:
@@ -73,7 +73,7 @@ class Player:
     def takeHeavyHitOnBlock(self, heavy_hit, distance):
         print("SOMEONE HAS BEEN BREAK")
         self.__life_point = self.__life_point - HEAVY_HIT_ON_BLOCK_DMG
-        self.update(distance, heavy_hit, self.lastAction, REWARD_BLOCKED_HIT)
+        self.update(distance, heavy_hit, self.lastAction, REWARD_GET_BREAK)
 
 
     def block_hit(self, hit, distance):
