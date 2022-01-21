@@ -21,13 +21,10 @@ class Environment:
 
     def rewardForDistance(self, oldDistance, newDistance):
         if abs(oldDistance[0]) < abs(newDistance[0]):
-            print("RECULE")
             return REWARD_RETREAT
         if abs(oldDistance[1]) < abs(newDistance[1]):
-            print("RECULE")
             return REWARD_RETREAT
         if abs(oldDistance[0]) > abs(newDistance[0]):
-            print("AVANCE")
             return REWARD_APPROACH
         if abs(oldDistance[1]) > abs(newDistance[1]):
             print("AVANCE")
@@ -136,24 +133,18 @@ class Environment:
             reward = -5
 
         if new_state is not None and new_state in self.__states:
-            print("NOUVELLE POSITION = " + str(new_state))
-            print("POSITION ADVERSE = " + str(opponent.state))
             if new_state[0] == opponent.state[0] and new_state[1] == opponent.state[1]:
                 reward = RUN_IN_OPPONENT
-                print("LES PARAMETRES SONT => " + str(distance) + " " + opponent.lastAction + " " + action + " " + str(
-                    reward))
+
                 player.update(distance, opponent.lastAction, action, reward)
                 new_state = player.state
             elif self.__states[new_state] == WALL:
-                print("JE PREND UN MUR")
                 reward = REWARD_BORDER
-                print("LA")
                 player.update(distance, opponent.lastAction, action, reward)
                 new_state = player.state
             else:
                 newDistance = self.getDistance(new_state, opponent.state)
                 reward = self.rewardForDistance(distance, newDistance)
-                print("ICI")
                 player.update(distance, opponent.lastAction, action, reward)
 
             player.setState(new_state)

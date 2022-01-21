@@ -62,7 +62,6 @@ class Player:
     def takeHit(self, hit, distance):
         print("SOMEONE TAKE HIT")
         self.__life_point = self.__life_point - HIT_DMG
-        print("LES PARAMETRES SONT => " + str(distance) + " " + hit + " " + self.__last_action + " " + str(REWARD_GET_HIT))
         self.update(distance, hit, self.__last_action, REWARD_GET_HIT)
 
     def takeHeavyHit(self, heavy_hit, distance):
@@ -122,7 +121,6 @@ class Player:
                                                                 (reward + self.__discount_factor *
                                                                  maxQ - self.__qtable[distance][other_player_action][
                                                                      action])
-        print("VALEUR QTABLE = " + str( self.__qtable[distance][other_player_action][action]))
 
         self.__score += reward
 

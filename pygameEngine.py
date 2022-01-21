@@ -81,8 +81,6 @@ def displayPosition(PlayerOne, PlayerTwo):
                 string = string + '2'
             else:
                 string = string + ' '
-        print(string)
-
 
 def StartPygame():
     screen.blit(background, background.get_rect())
@@ -100,8 +98,6 @@ def StartPygame():
             running = False
 
         env = GameBoard(GROUND)
-        print(env.playerOnePosition)
-        print(env.playerTwoPosition)
         PlayerOne = Player(env, env.playerOnePosition, "red", STARTING_LIFE_POINT)
         PlayerTwo = Player(env, env.playerTwoPosition, "blue", STARTING_LIFE_POINT)
         running = False
@@ -148,15 +144,15 @@ def StartPygame():
             print("JOUEUR 2 : " + str(PlayerTwo.score))
 
         #print(PlayerOne.qtable[(1, 0)][ATT_LEFT])
-        print(PlayerOne.qtable[(1, 0)][ATT_RIGHT])
-        print(PlayerTwo.qtable[(-1, 0)][ATT_RIGHT])
+        #print(PlayerOne.qtable[(1, 0)][ATT_RIGHT])
+        #print(PlayerTwo.qtable[(-1, 0)][ATT_RIGHT])
         #print(PlayerTwo.qtable[(-1, 0)][ATT_LEFT])
 
     pygame.quit()
 
 
 def positionVisual(player):
-    print(player.state)
+    #print(player.state)
     return (player.state[1] * 200, player.state[0] * 200)
 
 
@@ -173,7 +169,6 @@ def loopVisualBoxer(player, playerTwo, screen):
 
     pygame.display.update()
 
-    print(player.color, player.lastAction)
 
 
 def displayPlayer(player, screen):
