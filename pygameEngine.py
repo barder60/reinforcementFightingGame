@@ -163,6 +163,16 @@ def loopVisualBoxer(player, playerTwo, screen):
     screen.blit(scorePlayerOne, (25,0))
     screen.blit(scorePlayerTwo, (700, 0))
 
+    draw_health_bar_player_one = pygame.Rect(0, 0, STARTING_LIFE_POINT, 7)
+    pygame.draw.rect(screen, (255, 0, 0), draw_health_bar_player_one)
+    draw_health_player_one = pygame.Rect(0, 0, player.lifePoint, 7)
+    pygame.draw.rect(screen, (0, 255, 0), draw_health_player_one)
+
+    draw_health_bar_player_two = pygame.Rect(700, 0, STARTING_LIFE_POINT, 7)
+    pygame.draw.rect(screen, (255, 0, 0), draw_health_bar_player_two)
+    draw_health_player_two = pygame.Rect(700, 0, playerTwo.lifePoint, 7)
+    pygame.draw.rect(screen, (0, 255, 0), draw_health_player_two)
+
     displayPlayer(player, screen)
     displayPlayer(playerTwo, screen)
 
