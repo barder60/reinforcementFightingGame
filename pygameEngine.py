@@ -116,9 +116,14 @@ def StartPygame():
                     continue
 
                 distance = env.getDistance(PlayerOne.state, PlayerTwo.state)
-                bestAction = PlayerOne.best_action(distance, PlayerTwo.lastAction)
+                if PlayerOne.delay == 1:
+                    bestAction = PlayerOne.lastAction
+                    print("JOUEUR 1 : " + str(distance) + " -> WAS ALREADY PREPARING " + bestAction)
+                else:
+                    bestAction = PlayerOne.best_action(distance, PlayerTwo.lastAction)
+                    print("JOUEUR 1 : " + str(distance) + " -> " + bestAction)
+
                 displayPosition(PlayerOne, PlayerTwo)
-                print("JOUEUR 1 : " + str(distance) + " -> " + bestAction)
                 env.apply(PlayerOne, PlayerTwo, bestAction, distance)
                 loopVisualBoxer(PlayerOne, PlayerTwo, screen)
                 time.sleep(0.3)
@@ -129,9 +134,14 @@ def StartPygame():
 
                 # print("JOUEUR 2")
                 distance = env.getDistance(PlayerTwo.state, PlayerOne.state)
-                bestAction = PlayerTwo.best_action(distance, PlayerOne.lastAction)
+                if PlayerTwo.delay == 1:
+                    bestAction = PlayerTwo.lastAction
+                    print("JOUEUR 2 : " + str(distance) + " -> WAS ALREADY PREPARING " + bestAction)
+                else:
+                    bestAction = PlayerTwo.best_action(distance, PlayerOne.lastAction)
+                    print("JOUEUR 2 : " + str(distance) + " -> " + bestAction)
+
                 displayPosition(PlayerOne, PlayerTwo)
-                print("JOUEUR 2 : " + str(distance) + " -> " + bestAction)
                 env.apply(PlayerTwo, PlayerOne, bestAction, distance)
                 loopVisualBoxer(PlayerOne, PlayerTwo, screen)
                 time.sleep(0.3)

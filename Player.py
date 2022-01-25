@@ -1,5 +1,6 @@
 from constant import NOTHING, ACTIONS, HIT_DMG, HEAVY_HIT_DMG, HEAVY_HIT_ON_BLOCK_DMG, REWARD_GET_HIT, \
-    REWARD_GET_HEAVY_HIT, REWARD_BLOCKED_HIT, REWARD_GET_BREAK
+    REWARD_GET_HEAVY_HIT, REWARD_BLOCKED_HIT, REWARD_GET_BREAK, HEAVY_ATT_LEFT, HEAVY_ATT_RIGHT, BLOCK_LEFT, \
+    BLOCK_RIGHT, ATT_LEFT, ATT_RIGHT
 
 
 class Player:
@@ -74,7 +75,6 @@ class Player:
         self.__life_point = self.__life_point - HEAVY_HIT_ON_BLOCK_DMG
         self.update(distance, heavy_hit, self.lastAction, REWARD_GET_BREAK)
 
-
     def block_hit(self, hit, distance):
         print("SOMEONE BLOCK")
         self.update(distance, hit, self.lastAction, REWARD_BLOCKED_HIT)
@@ -137,3 +137,19 @@ class Player:
     @opponent_action_on_block.setter
     def opponent_action_on_block(self, value):
         self.__opponent_action_on_block = value
+
+    def cancelPlayerAttack(self):
+        self.__delay = 0
+        self.__last_action = NOTHING
+
+    def prepareHeavyAttack(self):
+        return self.lastAction == HEAVY_ATT_LEFT or self.lastAction == HEAVY_ATT_RIGHT
+
+    def prepareSimpleAttack(self):
+        return self.lastAction == ATT_LEFT or self.lastAction == ATT_RIGHT
+
+    def isBlocking(self):
+        return self.lastAction is BLOCK_LEFT or self.lastAction is BLOCK_RIGHT
+
+    def isNotBlocking(self):
+        return not self.isBlocking()
