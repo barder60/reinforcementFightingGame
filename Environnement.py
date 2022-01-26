@@ -93,6 +93,8 @@ class Environment:
             elif opponent.isBlocking() and self.opponentIsTouchable(player, opponent):
                 reward = REWARD_HIT_IN_BLOCK
                 opponent.block_hit(player.lastAction, opponent_distance)
+                player.attack_on_block()
+                action = NOTHING
             else:
                 reward = REWARD_MISS
             if opponent.prepareHeavyAttack() and opponent.delay == 1 and self.opponentIsTouchable(player, opponent):

@@ -79,6 +79,9 @@ class Player:
         print("SOMEONE BLOCK")
         self.update(distance, hit, self.lastAction, REWARD_BLOCKED_HIT)
 
+    def attack_on_block(self):
+        self.delay = 1
+
     def isDead(self):
         return self.__life_point <= 0
 
@@ -139,7 +142,7 @@ class Player:
         self.__opponent_action_on_block = value
 
     def cancelPlayerAttack(self):
-        self.__delay = 0
+        self.__delay = 1
         self.__last_action = NOTHING
 
     def prepareHeavyAttack(self):
