@@ -23,8 +23,8 @@ class Environment:
         reward = 0
         new_state = None
 
-        if player.delay == 1:
-            action, reward = self.applyWithDelay(player,opponent, distance)
+        if player.delay > 0:
+            self.applyWithDelay(player,opponent, distance)
             return
         elif action == NOTHING:
             reward = REWARD_NOTHING
@@ -38,13 +38,13 @@ class Environment:
             new_state = (player.state[0] + 1, player.state[1])
 
         elif action == HEAVY_ATT_RIGHT:
-            player.delay = 1
+            player.delay = 2
             player.opponent_action_on_delay = opponent.lastAction
             player.distance_on_delay = distance
             player.opponent_delay_on_delay = opponent.delay
             reward = 0
         elif action == HEAVY_ATT_LEFT:
-            player.delay = 1
+            player.delay = 2
             player.opponent_action_on_delay = opponent.lastAction
             player.distance_on_delay = distance
             player.opponent_delay_on_delay = opponent.delay
@@ -88,7 +88,8 @@ class Environment:
 
     def applyWithDelay(self, player, opponent, distance):
         opponent_distance = (-distance[0], -distance[1])
-        player.delay = 0
+        player.delay -= 1
+
         initialAction = player.lastAction
         opponentAction = player.opponent_action_on_delay
         distanceOnAction = player.distance_on_delay
@@ -96,39 +97,39 @@ class Environment:
         action = player.lastAction
         reward = 0
 
-        if player.prepareHeavyAttack():
-            if opponent.isNotBlocking() and self.opponentIsTouchable(player, opponent):
-                reward = REWARD_DIRECT_HEAVY_HIT
-                print("JE METS UN GROS COUP")
-                opponent.takeHeavyHit(player.lastAction, opponent_distance)
-            elif opponent.isBlocking() and self.opponentIsTouchable(player, opponent):
-                reward = REWARD_BREAK_BLOCK
-                opponent.takeHeavyHitOnBlock(player.lastAction, opponent_distance)
-            else:
-                reward = REWARD_MISS
-        elif player.prepareSimpleAttack():
-            if opponent.isNotBlocking() and self.opponentIsTouchable(player, opponent):
-                print("JE METS UN COUP SIMPLE")
-                if opponent.prepareHeavyAttack() and opponent.delay == 1 and self.opponentIsTouchable(player, opponent):
-                    opponent.cancelPlayerAttack()
-                    reward = REWARD_INTERRUPT
+        if player.delay == 0:
+            if player.prepareHeavyAttack():
+                if opponent.isNotBlocking() and self.opponentIsTouchable(player, opponent):
+                    reward = REWARD_DIRECT_HEAVY_HIT
+                    print("JE METS UN GROS COUP")
+                    opponent.takeHeavyHit(player.lastAction, opponent_distance)
+                elif opponent.isBlocking() and self.opponentIsTouchable(player, opponent):
+                    reward = REWARD_BREAK_BLOCK
+                    opponent.takeHeavyHitOnBlock(player.lastAction, opponent_distance)
                 else:
-                    reward = REWARD_DIRECT_HIT
-                    opponent.takeHit(player.lastAction, opponent_distance)
-            elif opponent.isBlocking() and self.opponentIsTouchable(player, opponent):
-                reward = REWARD_HIT_IN_BLOCK
-                opponent.block_hit(player.lastAction, opponent_distance)
-                player.attack_on_block()
-                action = NOTHING
-            else:
-                reward = REWARD_MISS
+                    reward = REWARD_MISS
+            elif player.prepareSimpleAttack():
+                if opponent.isNotBlocking() and self.opponentIsTouchable(player, opponent):
+                    print("JE METS UN COUP SIMPLE")
+                    if opponent.prepareHeavyAttack() and opponent.delay >= 1 and self.opponentIsTouchable(player, opponent):
+                        opponent.cancelPlayerAttack()
+                        reward = REWARD_INTERRUPT
+                    else:
+                        reward = REWARD_DIRECT_HIT
+                        opponent.takeHit(player.lastAction, opponent_distance)
+                elif opponent.isBlocking() and self.opponentIsTouchable(player, opponent):
+                    reward = REWARD_HIT_IN_BLOCK
+                    opponent.block_hit(player.lastAction, opponent_distance)
+                    player.attack_on_block()
+                    action = NOTHING
+                else:
+                    reward = REWARD_MISS
 
-        if initialAction != BLOCK_LEFT and initialAction != BLOCK_RIGHT and initialAction != NOTHING:
-            print("UPDATE DE " + initialAction + " DISTANCE : " + str(distanceOnAction) + "SUR LACTION : " + opponentAction + "avec un delay de " + str(opponentDelay))
-            player.update(distanceOnAction, opponentAction, initialAction, reward, opponentDelay)
+            if initialAction != BLOCK_LEFT and initialAction != BLOCK_RIGHT and initialAction != NOTHING:
+                print("UPDATE DE " + initialAction + " DISTANCE : " + str(distanceOnAction) + "SUR LACTION : " + opponentAction + "avec un delay de " + str(opponentDelay))
+                player.update(distanceOnAction, opponentAction, initialAction, reward, opponentDelay)
 
-        player.setLastAction(action)
-        return action, reward
+            player.setLastAction(action)
 
     @property
     def playerOnePosition(self):

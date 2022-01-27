@@ -88,74 +88,76 @@ def StartPygame():
     isFinished = False
     listResult = []
 
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
 
-        clock.tick(30)
 
-        if isFinished:
-            running = False
+    clock.tick(30)
+    env = GameBoard(GROUND)
+    PlayerOne = Player(env, env.playerOnePosition, "red", STARTING_LIFE_POINT)
+    PlayerTwo = Player(env, env.playerTwoPosition, "blue", STARTING_LIFE_POINT)
+    forceQuit = False
+    for repeat in range(REPEAT_NB):
+        timer = 0
+        PlayerOne.reset()
+        PlayerTwo.reset()
+        isFinished = False
+        if forceQuit:
+            break
 
-        env = GameBoard(GROUND)
-        PlayerOne = Player(env, env.playerOnePosition, "red", STARTING_LIFE_POINT)
-        PlayerTwo = Player(env, env.playerTwoPosition, "blue", STARTING_LIFE_POINT)
-        running = False
-        for repeat in range(REPEAT_NB):
-            timer = 0
-            PlayerOne.reset()
-            PlayerTwo.reset()
-            isFinished = False
-            while not isFinished:
-                if timer == MAX_TIMER:
+        while not isFinished:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
                     isFinished = True
+                    forceQuit = True
                     continue
 
-                if PlayerOne.isDead():
-                    isFinished = True
-                    PlayerTwo.add_win_score()
-                    continue
+            if timer == MAX_TIMER:
+                isFinished = True
+                continue
 
-                distance = env.getDistance(PlayerOne.state, PlayerTwo.state)
-                if PlayerOne.delay == 1:
-                    bestAction = PlayerOne.lastAction
-                    print("JOUEUR 1 : " + str(distance) + " -> WAS ALREADY PREPARING " + bestAction)
-                else:
-                    bestAction = PlayerOne.best_action(distance, PlayerTwo.lastAction, PlayerTwo.delay)
-                    print("JOUEUR 1 : " + str(distance) + " -> " + bestAction)
+            if PlayerOne.isDead():
+                isFinished = True
+                PlayerTwo.add_win_score()
+                continue
 
-                displayPosition(PlayerOne, PlayerTwo)
-                env.apply(PlayerOne, PlayerTwo, bestAction, distance)
-                loopVisualBoxer(PlayerOne, PlayerTwo, screen,timer, repeat)
-                time.sleep(float(LOOP_SPEED))
+            distance = env.getDistance(PlayerOne.state, PlayerTwo.state)
+            if PlayerOne.delay > 0:
+                bestAction = PlayerOne.lastAction
+                print("JOUEUR 1 : " + str(distance) + " -> WAS ALREADY PREPARING " + bestAction)
+            else:
+                bestAction = PlayerOne.best_action(distance, PlayerTwo.lastAction, PlayerTwo.delay)
+                print("JOUEUR 1 : " + str(distance) + " -> " + bestAction)
 
-                if PlayerTwo.isDead():
-                    isFinished = True
-                    PlayerOne.add_win_score()
-                    continue
+            displayPosition(PlayerOne, PlayerTwo)
+            env.apply(PlayerOne, PlayerTwo, bestAction, distance)
+            loopVisualBoxer(PlayerOne, PlayerTwo, screen,timer, repeat)
+            time.sleep(float(LOOP_SPEED))
 
-                # print("JOUEUR 2")
-                distance = env.getDistance(PlayerTwo.state, PlayerOne.state)
-                if PlayerTwo.delay == 1:
-                    bestAction = PlayerTwo.lastAction
-                    print("JOUEUR 2 : " + str(distance) + " -> WAS ALREADY PREPARING " + bestAction)
-                else:
-                    bestAction = PlayerTwo.best_action(distance, PlayerOne.lastAction, PlayerOne.delay)
-                    print("JOUEUR 2 : " + str(distance) + " -> " + bestAction)
+            if PlayerTwo.isDead():
+                isFinished = True
+                PlayerOne.add_win_score()
+                continue
 
-                displayPosition(PlayerOne, PlayerTwo)
-                env.apply(PlayerTwo, PlayerOne, bestAction, distance)
-                loopVisualBoxer(PlayerOne, PlayerTwo, screen, timer, repeat)
-                time.sleep(LOOP_SPEED)
+            # print("JOUEUR 2")
+            distance = env.getDistance(PlayerTwo.state, PlayerOne.state)
+            if PlayerTwo.delay > 0:
+                bestAction = PlayerTwo.lastAction
+                print("JOUEUR 2 : " + str(distance) + " -> WAS ALREADY PREPARING " + bestAction)
+            else:
+                bestAction = PlayerTwo.best_action(distance, PlayerOne.lastAction, PlayerOne.delay)
+                print("JOUEUR 2 : " + str(distance) + " -> " + bestAction)
+
+            displayPosition(PlayerOne, PlayerTwo)
+            env.apply(PlayerTwo, PlayerOne, bestAction, distance)
+            loopVisualBoxer(PlayerOne, PlayerTwo, screen, timer, repeat)
+            time.sleep(LOOP_SPEED)
 
 
-                timer = timer + 1
+            timer = timer + 1
 
-            listResult.append((PlayerOne.score,PlayerTwo.score,timer))
-            print("PASSAGE NUMERO " + str(repeat))
-            print("JOUEUR 1 : " + str(PlayerOne.score))
-            print("JOUEUR 2 : " + str(PlayerTwo.score))
+        listResult.append((PlayerOne.score,PlayerTwo.score,timer))
+        print("PASSAGE NUMERO " + str(repeat))
+        print("JOUEUR 1 : " + str(PlayerOne.score))
+        print("JOUEUR 2 : " + str(PlayerTwo.score))
 
         #print(PlayerOne.qtable[(1, 0)][ATT_LEFT])
         #print(PlayerOne.qtable[(1, 0)][ATT_RIGHT])
