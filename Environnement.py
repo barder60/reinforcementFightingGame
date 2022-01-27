@@ -25,6 +25,7 @@ class Environment:
 
         if player.delay == 1:
             action, reward = self.applyWithDelay(player,opponent, distance)
+            return
         elif action == NOTHING:
             reward = REWARD_NOTHING
         elif action == LEFT:
@@ -38,48 +39,66 @@ class Environment:
 
         elif action == HEAVY_ATT_RIGHT:
             player.delay = 1
+            player.opponent_action_on_delay = opponent.lastAction
+            player.distance_on_delay = distance
+            player.opponent_delay_on_delay = opponent.delay
             reward = 0
         elif action == HEAVY_ATT_LEFT:
             player.delay = 1
+            player.opponent_action_on_delay = opponent.lastAction
+            player.distance_on_delay = distance
+            player.opponent_delay_on_delay = opponent.delay
             reward = 0
         elif action == ATT_RIGHT or action == ATT_LEFT:
             player.delay = 1
+            player.opponent_action_on_delay = opponent.lastAction
+            player.distance_on_delay = distance
+            print("J'enregistre le delai de ladversaire = " + str(opponent.delay))
+            player.opponent_delay_on_delay = opponent.delay
             reward = 0
         elif action == BLOCK_RIGHT or action == BLOCK_LEFT:
             player.delay = 1
-            player.opponent_action_on_block = opponent.lastAction
+            player.opponent_action_on_delay = opponent.lastAction
+            player.distance_on_delay = distance
+            player.opponent_delay_on_delay = opponent.delay
+            print("JE PREPARE LE BLOCK LORSQUE " + opponent.lastAction + " " + str(opponent.delay) + " " + str(distance))
             reward = -5
 
         if new_state is not None and new_state in self.__states:
             if new_state[0] == opponent.state[0] and new_state[1] == opponent.state[1]:
                 reward = RUN_IN_OPPONENT
 
-                player.update(distance, opponent.lastAction, action, reward)
+                player.update(distance, opponent.lastAction, action, reward, opponent.delay)
                 new_state = player.state
             elif self.__states[new_state] == WALL:
                 reward = REWARD_BORDER
-                player.update(distance, opponent.lastAction, action, reward)
+                player.update(distance, opponent.lastAction, action, reward, opponent.delay)
                 new_state = player.state
             else:
                 reward = REWARD_MOVE
-                player.update(distance, opponent.lastAction, action, reward)
+                player.update(distance, opponent.lastAction, action, reward, opponent.delay)
 
             player.setState(new_state)
 
         else:
-            player.update(distance, opponent.lastAction, action, reward)
+            player.update(distance, opponent.lastAction, action, reward, opponent.delay)
 
         player.setLastAction(action)
 
     def applyWithDelay(self, player, opponent, distance):
         opponent_distance = (-distance[0], -distance[1])
         player.delay = 0
+        initialAction = player.lastAction
+        opponentAction = player.opponent_action_on_delay
+        distanceOnAction = player.distance_on_delay
+        opponentDelay = player.opponent_delay_on_delay
         action = player.lastAction
         reward = 0
 
         if player.prepareHeavyAttack():
             if opponent.isNotBlocking() and self.opponentIsTouchable(player, opponent):
                 reward = REWARD_DIRECT_HEAVY_HIT
+                print("JE METS UN GROS COUP")
                 opponent.takeHeavyHit(player.lastAction, opponent_distance)
             elif opponent.isBlocking() and self.opponentIsTouchable(player, opponent):
                 reward = REWARD_BREAK_BLOCK
@@ -88,6 +107,7 @@ class Environment:
                 reward = REWARD_MISS
         elif player.prepareSimpleAttack():
             if opponent.isNotBlocking() and self.opponentIsTouchable(player, opponent):
+                print("JE METS UN COUP SIMPLE")
                 reward = REWARD_DIRECT_HIT
                 opponent.takeHit(player.lastAction, opponent_distance)
             elif opponent.isBlocking() and self.opponentIsTouchable(player, opponent):
@@ -98,8 +118,14 @@ class Environment:
             else:
                 reward = REWARD_MISS
             if opponent.prepareHeavyAttack() and opponent.delay == 1 and self.opponentIsTouchable(player, opponent):
+                print("JE CANCEL UNE ATTAQUE")
                 opponent.cancelPlayerAttack()
 
+        if initialAction != BLOCK_LEFT and initialAction != BLOCK_RIGHT and initialAction != NOTHING:
+            print("UPDATE DE " + initialAction + " DISTANCE : " + str(distanceOnAction) + "SUR LACTION : " + opponentAction + "avec un delay de " + str(opponentDelay))
+            player.update(distanceOnAction, opponentAction, initialAction, reward, opponentDelay)
+
+        player.setLastAction(action)
         return action, reward
 
     @property
