@@ -86,6 +86,7 @@ def StartPygame():
     screen.blit(background, background.get_rect())
     running = True
     isFinished = False
+    listResult = []
 
     while running:
         for event in pygame.event.get():
@@ -151,6 +152,7 @@ def StartPygame():
 
                 timer = timer + 1
 
+            listResult.append((PlayerOne.score,PlayerTwo.score,timer))
             print("PASSAGE NUMERO " + str(repeat))
             print("JOUEUR 1 : " + str(PlayerOne.score))
             print("JOUEUR 2 : " + str(PlayerTwo.score))
@@ -161,6 +163,7 @@ def StartPygame():
         #print(PlayerTwo.qtable[(-1, 0)][ATT_LEFT])
 
     pygame.quit()
+    print(listResult)
 
 
 def positionVisual(player):

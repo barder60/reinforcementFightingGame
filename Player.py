@@ -1,6 +1,6 @@
 from constant import NOTHING, ACTIONS, HIT_DMG, HEAVY_HIT_DMG, HEAVY_HIT_ON_BLOCK_DMG, REWARD_GET_HIT, \
     REWARD_GET_HEAVY_HIT, REWARD_BLOCKED_HIT, REWARD_GET_BREAK, HEAVY_ATT_LEFT, HEAVY_ATT_RIGHT, BLOCK_LEFT, \
-    BLOCK_RIGHT, ATT_LEFT, ATT_RIGHT, MAX_DELAY, REWARD_INTERRUPT, REWARD_WIN
+    BLOCK_RIGHT, ATT_LEFT, ATT_RIGHT, MAX_DELAY, REWARD_INTERRUPT, REWARD_WIN, REWARD_GET_INTERRUPT
 
 
 class Player:
@@ -70,6 +70,12 @@ class Player:
         self.__life_point = self.__life_point - HIT_DMG
         self.update(distance, hit, self.__last_action, REWARD_GET_HIT, MAX_DELAY)
 
+    def cancelPlayerAttack(self):
+        print("INTERUPTION " + self.__last_action + " DISTANCE : " + str(self.__distance_on_delay) + "SUR LACTION : " + self.__opponent_action_on_delay)
+        self.update(self.__distance_on_delay, self.__opponent_action_on_delay, self.__last_action, REWARD_GET_INTERRUPT, MAX_DELAY)
+        self.__delay = 1
+        self.__last_action = NOTHING
+
     def takeHeavyHit(self, heavy_hit, distance):
         self.__life_point = self.__life_point - HEAVY_HIT_DMG
         self.update(distance, heavy_hit, self.__last_action, REWARD_GET_HEAVY_HIT, MAX_DELAY)
@@ -77,7 +83,7 @@ class Player:
     def takeHeavyHitOnBlock(self, heavy_hit, distance):
         self.__life_point = self.__life_point - HEAVY_HIT_ON_BLOCK_DMG
         print("JE ME PREND l'attaque suivante " + heavy_hit + " " + str(MAX_DELAY) + " " + str(distance) +
-              "avec REWARD = " + REWARD_GET_BREAK + " MON ACTION = " + self.lastAction)
+              "avec REWARD = " + str(REWARD_GET_BREAK) + " MON ACTION = " + self.lastAction)
         self.update(distance, heavy_hit, self.lastAction, REWARD_GET_BREAK, MAX_DELAY)
 
     def block_hit(self, hit, distance):
@@ -166,11 +172,7 @@ class Player:
     def opponent_delay_on_delay(self, value):
         self.__opponent_delay_on_delay = value
 
-    def cancelPlayerAttack(self):
-        print("UPDATE DE " + self.__last_action + " DISTANCE : " + str(self.__distance_on_delay) + "SUR LACTION : " + self.__opponent_action_on_delay)
-        self.update(self.__distance_on_delay, self.__opponent_action_on_delay, self.__last_action, REWARD_INTERRUPT, MAX_DELAY)
-        self.__delay = 1
-        self.__last_action = NOTHING
+
 
     def prepareHeavyAttack(self):
         return self.lastAction == HEAVY_ATT_LEFT or self.lastAction == HEAVY_ATT_RIGHT

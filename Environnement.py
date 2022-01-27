@@ -1,7 +1,7 @@
 from constant import PLAYER_ONE_POSITION, PLAYER_TWO_POSITION, HEAVY_ATT_RIGHT, \
     HEAVY_ATT_LEFT, LEFT, RIGHT, UP, DOWN, BLOCK_LEFT, BLOCK_RIGHT, ATT_LEFT, ATT_RIGHT, WALL, RUN_IN_OPPONENT, \
     REWARD_BORDER, REWARD_DIRECT_HIT, REWARD_MISS, REWARD_HIT_IN_BLOCK, NOTHING, \
-    REWARD_NOTHING, REWARD_DIRECT_HEAVY_HIT, REWARD_BREAK_BLOCK, REWARD_MOVE
+    REWARD_NOTHING, REWARD_DIRECT_HEAVY_HIT, REWARD_BREAK_BLOCK, REWARD_MOVE, REWARD_INTERRUPT
 
 
 class Environment:
@@ -62,6 +62,7 @@ class Environment:
             player.distance_on_delay = distance
             player.opponent_delay_on_delay = opponent.delay
             print("JE PREPARE LE BLOCK LORSQUE " + opponent.lastAction + " " + str(opponent.delay) + " " + str(distance))
+            print(player.qtable[distance][opponent.lastAction][opponent.delay])
             reward = -5
 
         if new_state is not None and new_state in self.__states:
@@ -108,8 +109,12 @@ class Environment:
         elif player.prepareSimpleAttack():
             if opponent.isNotBlocking() and self.opponentIsTouchable(player, opponent):
                 print("JE METS UN COUP SIMPLE")
-                reward = REWARD_DIRECT_HIT
-                opponent.takeHit(player.lastAction, opponent_distance)
+                if opponent.prepareHeavyAttack() and opponent.delay == 1 and self.opponentIsTouchable(player, opponent):
+                    opponent.cancelPlayerAttack()
+                    reward = REWARD_INTERRUPT
+                else:
+                    reward = REWARD_DIRECT_HIT
+                    opponent.takeHit(player.lastAction, opponent_distance)
             elif opponent.isBlocking() and self.opponentIsTouchable(player, opponent):
                 reward = REWARD_HIT_IN_BLOCK
                 opponent.block_hit(player.lastAction, opponent_distance)
@@ -117,9 +122,6 @@ class Environment:
                 action = NOTHING
             else:
                 reward = REWARD_MISS
-            if opponent.prepareHeavyAttack() and opponent.delay == 1 and self.opponentIsTouchable(player, opponent):
-                print("JE CANCEL UNE ATTAQUE")
-                opponent.cancelPlayerAttack()
 
         if initialAction != BLOCK_LEFT and initialAction != BLOCK_RIGHT and initialAction != NOTHING:
             print("UPDATE DE " + initialAction + " DISTANCE : " + str(distanceOnAction) + "SUR LACTION : " + opponentAction + "avec un delay de " + str(opponentDelay))
