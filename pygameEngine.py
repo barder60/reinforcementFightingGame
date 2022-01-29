@@ -4,9 +4,10 @@ import pygame
 from pygame.sprite import Sprite
 
 from Environnement import Environment as GameBoard
-from constant import GROUND, ATT_LEFT, ATT_RIGHT, STARTING_LIFE_POINT, LOOP_SPEED, MAX_TIMER, REPEAT_NB
+from constant import GROUND, ATT_LEFT, ATT_RIGHT, STARTING_LIFE_POINT, LOOP_SPEED, MAX_TIMER, REPEAT_NB, REWARD_WIN
 from Player import Player
 from utils import spritesheet
+import matplotlib.pyplot as plt
 
 pygame.init()
 pygame.font.init()
@@ -82,13 +83,13 @@ def displayPosition(PlayerOne, PlayerTwo):
             else:
                 string = string + ' '
 
+
 def StartPygame():
     screen.blit(background, background.get_rect())
     running = True
     isFinished = False
-    listResult = []
-
-
+    playerOneHistory = []
+    playerTwoHistory = []
 
     clock.tick(30)
     env = GameBoard(GROUND)
@@ -114,12 +115,20 @@ def StartPygame():
                 isFinished = True
                 continue
 
+            if PlayerTwo.isDead():
+                isFinished = True
+                distance = env.getDistance(PlayerTwo.state, PlayerOne.state)
+                PlayerTwo.update(distance, PlayerOne.lastAction, PlayerTwo.lastAction, REWARD_WIN, PlayerOne.delay)
+                continue
+
             if PlayerOne.isDead():
                 isFinished = True
-                PlayerTwo.add_win_score()
+                distance = env.getDistance(PlayerOne.state, PlayerTwo.state)
+                PlayerTwo.update(distance, PlayerOne.lastAction, PlayerTwo.lastAction, REWARD_WIN, PlayerTwo.delay)
                 continue
 
             distance = env.getDistance(PlayerOne.state, PlayerTwo.state)
+
             if PlayerOne.delay > 0:
                 bestAction = PlayerOne.lastAction
                 print("JOUEUR 1 : " + str(distance) + " -> WAS ALREADY PREPARING " + bestAction)
@@ -129,16 +138,11 @@ def StartPygame():
 
             displayPosition(PlayerOne, PlayerTwo)
             env.apply(PlayerOne, PlayerTwo, bestAction, distance)
-            loopVisualBoxer(PlayerOne, PlayerTwo, screen,timer, repeat)
+            loopVisualBoxer(PlayerOne, PlayerTwo, screen, timer, repeat)
             time.sleep(float(LOOP_SPEED))
 
-            if PlayerTwo.isDead():
-                isFinished = True
-                PlayerOne.add_win_score()
-                continue
-
-            # print("JOUEUR 2")
             distance = env.getDistance(PlayerTwo.state, PlayerOne.state)
+
             if PlayerTwo.delay > 0:
                 bestAction = PlayerTwo.lastAction
                 print("JOUEUR 2 : " + str(distance) + " -> WAS ALREADY PREPARING " + bestAction)
@@ -151,25 +155,27 @@ def StartPygame():
             loopVisualBoxer(PlayerOne, PlayerTwo, screen, timer, repeat)
             time.sleep(LOOP_SPEED)
 
-
             timer = timer + 1
 
-        listResult.append((PlayerOne.score,PlayerTwo.score,timer))
+        playerOneHistory.append(PlayerOne.score)
+        playerTwoHistory.append(PlayerTwo.score)
         print("PASSAGE NUMERO " + str(repeat))
         print("JOUEUR 1 : " + str(PlayerOne.score))
         print("JOUEUR 2 : " + str(PlayerTwo.score))
 
-        #print(PlayerOne.qtable[(1, 0)][ATT_LEFT])
-        #print(PlayerOne.qtable[(1, 0)][ATT_RIGHT])
-        #print(PlayerTwo.qtable[(-1, 0)][ATT_RIGHT])
-        #print(PlayerTwo.qtable[(-1, 0)][ATT_LEFT])
+        # print(PlayerOne.qtable[(1, 0)][ATT_LEFT])
+        # print(PlayerOne.qtable[(1, 0)][ATT_RIGHT])
+        # print(PlayerTwo.qtable[(-1, 0)][ATT_RIGHT])
+        # print(PlayerTwo.qtable[(-1, 0)][ATT_LEFT])
 
     pygame.quit()
-    print(listResult)
+    plt.plot(playerOneHistory)
+    plt.plot(playerTwoHistory)
+    plt.show()
 
 
 def positionVisual(player):
-    #print(player.state)
+    # print(player.state)
     return (player.state[1] * 200, player.state[0] * 200)
 
 
@@ -179,7 +185,7 @@ def loopVisualBoxer(player, playerTwo, screen, remainingTime, repeat):
     scorePlayerTwo = myfont.render(str(playerTwo.score), False, (0, 0, 255))
     timer = myfont.render("temps restant : " + str(MAX_TIMER - remainingTime), False, (0, 0, 0))
     repeatNumber = myfont.render(str(repeat) + " sur " + str(REPEAT_NB), False, (0, 0, 0))
-    screen.blit(scorePlayerOne, (25,15))
+    screen.blit(scorePlayerOne, (25, 15))
     screen.blit(scorePlayerTwo, (700, 15))
     screen.blit(repeatNumber, (400, 5))
     screen.blit(timer, (350, 20))
@@ -197,9 +203,7 @@ def loopVisualBoxer(player, playerTwo, screen, remainingTime, repeat):
     displayPlayer(player, screen)
     displayPlayer(playerTwo, screen)
 
-
     pygame.display.update()
-
 
 
 def displayPlayer(player, screen):
@@ -243,4 +247,3 @@ def displayPlayer(player, screen):
             player.last_animation = screen.blit(RED_BASIC_MOVEMENT_RIGHT, positionVisual(player))
         else:
             player.last_animation = screen.blit(BLUE_BASIC_MOVEMENT_LEFT, positionVisual(player))
-

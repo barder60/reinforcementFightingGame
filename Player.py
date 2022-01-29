@@ -68,6 +68,7 @@ class Player:
 
     def takeHit(self, hit, distance):
         self.__life_point = self.__life_point - HIT_DMG
+        print("JE PREND LE COUP " + self.__last_action + " DISTANCE : " + str(self.__distance_on_delay) + "SUR LACTION : " + str(hit))
         self.update(distance, hit, self.__last_action, REWARD_GET_HIT, MID_DELAY)
 
     def cancelPlayerAttack(self):
