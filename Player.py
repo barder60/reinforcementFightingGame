@@ -1,3 +1,5 @@
+from random import random, choice
+
 from constant import NOTHING, ACTIONS, HIT_DMG, HEAVY_HIT_DMG, HEAVY_HIT_ON_BLOCK_DMG, REWARD_GET_HIT, \
     REWARD_GET_HEAVY_HIT, REWARD_BLOCKED_HIT, REWARD_GET_BREAK, HEAVY_ATT_LEFT, HEAVY_ATT_RIGHT, BLOCK_LEFT, \
     BLOCK_RIGHT, ATT_LEFT, ATT_RIGHT, MAX_DELAY, REWARD_INTERRUPT, REWARD_WIN, REWARD_GET_INTERRUPT, MID_DELAY
@@ -16,6 +18,7 @@ class Player:
         self.__start = start
         self.__color = color
         self.__last_animation = ""
+        self.__exploration = 1.0
 
         self.__opponent_action_on_delay = None
         self.__distance_on_delay = None
@@ -68,8 +71,9 @@ class Player:
 
     def takeHit(self, hit, distance):
         self.__life_point = self.__life_point - HIT_DMG
-        print("JE PREND LE COUP " + self.__last_action + " DISTANCE : " + str(self.__distance_on_delay) + "SUR LACTION : " + str(hit))
+        print("JE PREND LE COUP " + self.__last_action + " DISTANCE : " + str(self.__distance_on_delay) + "SUR LACTION : " + str(hit) + " avec delay : " + str(MID_DELAY))
         self.update(distance, hit, self.__last_action, REWARD_GET_HIT, MID_DELAY)
+        print(self.qtable[distance][hit][MID_DELAY])
 
     def cancelPlayerAttack(self):
         print("INTERUPTION " + self.__last_action + " DISTANCE : " + str(self.__distance_on_delay) + "SUR LACTION : " + self.__opponent_action_on_delay)
@@ -121,13 +125,19 @@ class Player:
         self.__last_animation = last_animation
 
     def best_action(self, distance, other_player_last_action, other_player_delay):
-        best = None
-        # print(self.__qtable[distance][other_player_last_action])
-        for a in self.__qtable[distance][other_player_last_action][other_player_delay]:
-            if not best \
-                    or self.__qtable[distance][other_player_last_action][other_player_delay][a] > \
-                    self.__qtable[distance][other_player_last_action][other_player_delay][best]:
-                best = a
+
+        if random() < self.__exploration:
+            best = choice(ACTIONS)  # une action au hasard
+            self.__exploration *= 0.99
+        else:
+            best = None
+            print(other_player_last_action + " avec " + str(other_player_delay))
+            print(self.__qtable[distance][other_player_last_action][other_player_delay])
+            for a in self.__qtable[distance][other_player_last_action][other_player_delay]:
+                if not best \
+                        or self.__qtable[distance][other_player_last_action][other_player_delay][a] > \
+                        self.__qtable[distance][other_player_last_action][other_player_delay][best]:
+                    best = a
         return best
 
     def update(self, distance, other_player_action, action, reward, opponent_delay):

@@ -110,13 +110,13 @@ class Environment:
                     reward = REWARD_MISS
             elif player.prepareSimpleAttack():
                 if opponent.isNotBlocking() and self.opponentIsTouchable(player, opponent):
-                    print("JE METS UN COUP SIMPLE")
                     if opponent.prepareHeavyAttack() and opponent.delay >= 1 and self.opponentIsTouchable(player, opponent):
                         opponent.cancelPlayerAttack()
                         reward = REWARD_INTERRUPT
                     else:
                         reward = REWARD_DIRECT_HIT
                         opponent.takeHit(player.lastAction, opponent_distance)
+
                 elif opponent.isBlocking() and self.opponentIsTouchable(player, opponent):
                     reward = REWARD_HIT_IN_BLOCK
                     opponent.block_hit(player.lastAction, opponent_distance)
@@ -126,7 +126,7 @@ class Environment:
                     reward = REWARD_MISS
 
             if initialAction != BLOCK_LEFT and initialAction != BLOCK_RIGHT and initialAction != NOTHING:
-                print("UPDATE DE " + initialAction + " DISTANCE : " + str(distanceOnAction) + "SUR LACTION : " + opponentAction + "avec un delay de " + str(opponentDelay))
+                #print("UPDATE DE " + initialAction + " DISTANCE : " + str(distanceOnAction) + "SUR LACTION : " + opponentAction + "avec un delay de " + str(opponentDelay))
                 player.update(distanceOnAction, opponentAction, initialAction, reward, opponentDelay)
 
             player.setLastAction(action)
