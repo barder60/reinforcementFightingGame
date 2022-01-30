@@ -4,7 +4,8 @@ import pygame
 from pygame.sprite import Sprite
 
 from Environnement import Environment as GameBoard
-from constant import GROUND, ATT_LEFT, ATT_RIGHT, STARTING_LIFE_POINT, LOOP_SPEED, MAX_TIMER, REPEAT_NB, REWARD_WIN
+from constant import GROUND, ATT_LEFT, ATT_RIGHT, STARTING_LIFE_POINT, LOOP_SPEED, MAX_TIMER, REPEAT_NB, REWARD_WIN, \
+    LOAD_QTABLE
 from Player import Player
 from utils import spritesheet
 import matplotlib.pyplot as plt
@@ -95,6 +96,11 @@ def StartPygame():
     env = GameBoard(GROUND)
     PlayerOne = Player(env, env.playerOnePosition, "red", STARTING_LIFE_POINT)
     PlayerTwo = Player(env, env.playerTwoPosition, "blue", STARTING_LIFE_POINT)
+    if LOAD_QTABLE:
+        PlayerOne.load('playerOne_qtable')
+        PlayerTwo.load('playerTwo_qtable')
+
+
     forceQuit = False
     for repeat in range(REPEAT_NB):
         timer = 0
@@ -169,6 +175,9 @@ def StartPygame():
         # print(PlayerTwo.qtable[(-1, 0)][ATT_LEFT])
 
     pygame.quit()
+    PlayerOne.save('playerOne_qtable')
+    PlayerTwo.save('playerTwo_qtable')
+
     plt.plot(playerOneHistory)
     plt.plot(playerTwoHistory)
     plt.show()

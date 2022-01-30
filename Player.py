@@ -1,3 +1,4 @@
+import pickle
 from random import random, choice
 
 from constant import NOTHING, ACTIONS, HIT_DMG, HEAVY_HIT_DMG, HEAVY_HIT_ON_BLOCK_DMG, REWARD_GET_HIT, \
@@ -196,3 +197,11 @@ class Player:
 
     def isNotBlocking(self):
         return not self.isBlocking()
+
+    def save(self, filename):
+        with open(filename, 'wb') as file:
+            pickle.dump(self.__qtable, file)
+
+    def load(self, filename):
+        with open(filename, 'rb') as file:
+            self.__qtable = pickle.load(file)
